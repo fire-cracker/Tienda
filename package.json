@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "PORT=3001 nyc mocha --require @babel/register tests/**/*.js --exit",
     "lint": "eslint",
-    "start": "NODE_ENV=development nodemon --exec babel-node index.js --preset-env"
+    "start": "NODE_ENV=development nodemon --exec babel-node index.js --preset-env",
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "author": "Oyedeji Peace",
   "license": "MIT",
@@ -29,12 +30,17 @@
     "@babel/node": "^7.2.2",
     "@babel/preset-env": "^7.3.1",
     "babel-eslint": "^10.0.1",
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.1",
     "coveralls": "^3.0.2",
     "eslint": "^5.12.1",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.15.0",
     "node-dev": "^3.1.3",
-    "nodemon": "^1.18.9"
+    "mocha": "^5.2.0",
+    "mocha-lcov-reporter": "^1.3.0",
+    "nodemon": "^1.18.9",
+    "nyc": "^13.1.0"
   },
   "repository": {
     "type": "git",
