@@ -5,6 +5,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import chalk from 'chalk';
 import { createLogger, format, transports } from 'winston';
+import user from './server/model/user';
 
 const logger = createLogger({
   level: 'debug',
@@ -42,6 +43,7 @@ app.use(
 app.get('/', (req, res) => res.status(200).send({
   status: 'connection successful',
   message: 'Welcome to my Node Project!',
+  data: user.get()
 }));
 
 app.listen(port, () => {

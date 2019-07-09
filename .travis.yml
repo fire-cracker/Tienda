@@ -3,4 +3,12 @@ language: node_js
 node_js:
   - "12.6.0"
 
+services:
+  - mysql
+
+before_install:
+  - mysql -u root -e 'CREATE DATABASE IF NOT EXISTS nodeproject;'
+  - mysql -u root nodeproject < server/model/tshirtshop.sql
+  - npm install -g npm@latest
+
 after_success: npm run coverage
