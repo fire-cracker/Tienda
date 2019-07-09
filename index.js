@@ -5,7 +5,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import chalk from 'chalk';
 import { createLogger, format, transports } from 'winston';
-import user from './server/model/user';
+import productsRouter from './server/api/routes/productsRouter';
 
 const logger = createLogger({
   level: 'debug',
@@ -27,10 +27,6 @@ app.use(require('morgan')('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use(require('method-override')());
-
-app.use(express.static(`${__dirname}/public`));
-
 app.use(
   session({
     secret: 'nodeproject',
@@ -40,10 +36,12 @@ app.use(
   })
 );
 
+app.use(express.static(`${__dirname}/public`));
+app.use('/api/products', productsRouter);
+
 app.get('/', (req, res) => res.status(200).send({
   status: 'connection successful',
-  message: 'Welcome to my Node Project!',
-  data: user.get()
+  message: 'Welcome to my Node Project!'
 }));
 
 app.listen(port, () => {
