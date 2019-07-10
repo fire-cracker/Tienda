@@ -7,8 +7,8 @@ services:
   - mysql
 
 before_install:
-  - mysql -u root -e 'CREATE DATABASE IF NOT EXISTS nodeproject;'
-  - mysql -u root nodeproject < server/model/tshirtshop.sql
+  - mysql -u root -e 'CREATE DATABASE IF NOT EXISTS nodeproject_test;'
+  - mysql -u root nodeproject_test < server/model/tshirtshop.sql
   - npm install -g npm@latest
 
 after_success: npm run coverage

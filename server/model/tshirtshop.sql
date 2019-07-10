@@ -388,6 +388,40 @@ BEGIN
   WHERE  category_id = inCategoryId;
 END$$
 
+-- Create catalog_count_products_list stored procedure
+CREATE PROCEDURE catalog_count_products_list()
+BEGIN
+  SELECT     COUNT(*) AS products_count
+  FROM       product
+  ORDER BY      product_id;
+END$$
+
+-- Create catalog_get_products_list stored procedure
+CREATE PROCEDURE catalog_get_products_list(
+  IN inShortProductDescriptionLength INT,
+  IN inProductsPerPage INT, IN inStartItem INT
+)
+BEGIN
+-- Prepare statement
+PREPARE statement FROM
+ "SELECT   product_id, name,
+              IF(LENGTH(description) <= ?,
+                 description,
+                 CONCAT(LEFT(description, ?),
+                        '...')) AS description,
+              price, discounted_price, thumbnail
+     FROM     product
+     ORDER BY product_id
+     LIMIT    ?, ?";
+
+  SET @p1 = inShortProductDescriptionLength;
+  SET @p2 = inShortProductDescriptionLength;
+  SET @p3 = inStartItem;
+  SET @p4 = inProductsPerPage;
+
+  EXECUTE statement USING @p1, @p2, @p3, @p4;
+END$$
+
 -- Create catalog_count_products_in_category stored procedure
 CREATE PROCEDURE catalog_count_products_in_category(IN inCategoryId INT)
 BEGIN
