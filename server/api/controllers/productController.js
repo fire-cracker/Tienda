@@ -114,3 +114,42 @@ export const getDepartmentProduct = async (req, res) => {
     });
   }
 };
+
+/**
+* @export
+* @function searchProducts
+* @param {Object} req - request received
+* @param {Object} res - response object
+* @returns {Object} JSON object (JSend format)
+*/
+export const searchProducts = async (req, res) => {
+  try {
+    const {
+      query: {
+        query_string: queryString, all_words: allWords = 'on', description_length: descriptionLength = 200, limit = 20, page = 0
+      }
+    } = req;
+
+    const products = await sequelize.query('CALL catalog_search(:param1, :param2, :param3, :param4, :param5)', {
+      replacements: {
+        param1: queryString, param2: allWords, param3: descriptionLength, param4: limit, param5: page
+      }
+    });
+
+    const [{ 'count(*)': productsCount }] = await sequelize.query(
+      'CALL catalog_count_search_result(:param1, :param2)', {
+        replacements: {
+          param1: queryString, param2: allWords
+        }
+      }
+    );
+    return res.status(200).send({
+      count: productsCount,
+      rows: products
+    });
+  } catch (e) {
+    return res.status(502).send({
+      message: 'An error occurred'
+    });
+  }
+};
