@@ -8,10 +8,7 @@
     "lint": "eslint",
     "start": "NODE_ENV=development nodemon --exec babel-node index.js --preset-env",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "createdb": "mysql -u root -e 'CREATE DATABASE IF NOT EXISTS nodeproject_test;'",
-    "migrate": "mysql -u root nodeproject_test < server/model/tshirtshop.sql",
-    "undo:migration": "mysql -u root -e 'DROP DATABASE IF EXISTS nodeproject_test;'",
-    "migration": "npm run undo:migration && npm run createdb && npm run migrate"
+    "createdb": "mysql -u root -e 'CREATE DATABASE IF NOT EXISTS nodeproject_test;'"
   },
   "author": "Oyedeji Peace",
   "license": "MIT",
