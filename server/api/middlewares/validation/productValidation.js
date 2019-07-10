@@ -10,7 +10,7 @@ import { getAllProductsSchema } from './schemas/productSchema';
 * @param {Object} next - next object
 * @returns {Object} next object
 */
-export const getAllProductValidator = (req, res, next) => {
+export const getProductsValidator = (req, res, next) => {
   Joi.validate(req.query, getAllProductsSchema)
     .then(() => {
       next();

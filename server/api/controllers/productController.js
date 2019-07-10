@@ -1,7 +1,6 @@
-import sequelize from '../../model/index';
+import db from '../../model/index';
 import { arrayOfObjectExtractor } from '../../utils/index';
 
-const db = sequelize;
 
 /**
 * @export
@@ -11,23 +10,69 @@ const db = sequelize;
 * @returns {Object} JSON object (JSend format)
 */
 export const getAllProducts = async (req, res) => {
-  const { query: { description_length: descriptionLength = 200, limit = 20, page = 0 } } = req;
   try {
-    const [products] = await db.query('CALL catalog_get_products_list (:param1, :param2, :param3)', {
-      replacements: { param1: descriptionLength, param2: limit, param3: page },
-      attributes: { exclude: 'description' },
-      type: sequelize.QueryTypes.SELECT
-    });
+    const {
+      query: {
+        description_length: descriptionLength = 200, limit = 20, page = 0
+      }
+    } = req;
 
-    const [{ products_count: productsCount }] = await db.query('CALL catalog_count_products_list()');
+    const [products] = await db.query(
+      'CALL catalog_get_products_list (:param1, :param2, :param3)', {
+        replacements: { param1: descriptionLength, param2: limit, param3: page },
+        type: db.QueryTypes.SELECT
+      }
+    );
+
+    const [{ products_count: productsCount }] = await db.query(
+      'CALL catalog_count_products_list()'
+    );
 
     return res.status(200).send({
       count: productsCount,
-      rows: arrayOfObjectExtractor(products),
+      rows: arrayOfObjectExtractor(products)
     });
   } catch (e) {
-    return res.status(500).send({
-      message: 'Internal server error'
+    return res.status(502).send({
+      message: 'An error occurred'
+    });
+  }
+};
+
+/**
+* @export
+* @function getCatgoryProduct
+* @param {Object} req - request received
+* @param {Object} res - response object
+* @returns {Object} JSON object (JSend format)
+*/
+export const getCatgoryProduct = async (req, res) => {
+  try {
+    const {
+      params: { categoryId },
+      query: { description_length: descriptionLength = 200, limit = 20, page = 0 }
+    } = req;
+
+    const [products] = await db.query(
+      'CALL catalog_get_products_in_category(:param1, :param2, :param3, :param4)', {
+        replacements: {
+          param1: categoryId, param2: descriptionLength, param3: limit, param4: page
+        },
+        type: db.QueryTypes.SELECT
+      }
+    );
+
+    const [{ categories_count: productsCount }] = await db.query(
+      `CALL catalog_count_products_in_category(${categoryId})`
+    );
+
+    return res.status(200).send({
+      count: productsCount,
+      rows: arrayOfObjectExtractor(products)
+    });
+  } catch (e) {
+    return res.status(502).send({
+      message: 'An error occurred'
     });
   }
 };
