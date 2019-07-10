@@ -91,4 +91,33 @@ describe('Tests for get Product', () => {
       expect(res.body.error.length > 0).to.equal(true);
     });
   });
+
+  describe('Tests to search for products ', () => {
+    it('it should get all products that have the search word', async () => {
+      const res = await chai.request(app)
+        .get('/api/products/search?query_string=peace');
+      expect(res).to.have.status(200);
+      expect(res.body).to.be.an('object');
+      expect(res.body.count > 0).to.equal(true);
+      expect(res.body.count).to.be.a('number');
+      expect(res.body.rows.length > 0).to.equal(true);
+      expect(res.body.rows).to.be.an('array');
+    });
+    it('it should return empty array if no product has the search query', async () => {
+      const res = await chai.request(app)
+        .get('/api/products/search?query_string=serendipity');
+      expect(res).to.have.status(200);
+      expect(res.body).to.be.an('object');
+      expect(res.body.count).to.equal(0);
+      expect(res.body.count).to.be.a('number');
+      expect(res.body.rows.length).to.equal(0);
+      expect(res.body.rows).to.be.an('array');
+    });
+    it('should return error if any of parameters are incorrect', async () => {
+      const res = await chai.request(app)
+        .get('/api/products/search?query_string=peace&description_length=30&limit=h&page=0');
+      expect(res).to.have.status(422);
+      expect(res.body.error.length > 0).to.equal(true);
+    });
+  });
 });
