@@ -1,6 +1,6 @@
 -- Create tshirtshop tables
-
 -- Create department table
+DROP TABLE IF EXISTS `department`;
 CREATE TABLE `department` (
   `department_id` INT            NOT NULL  AUTO_INCREMENT,
   `name`          VARCHAR(100)   NOT NULL,
@@ -9,6 +9,7 @@ CREATE TABLE `department` (
 ) ENGINE=MyISAM;
 
 -- Create category table
+DROP TABLE IF EXISTS `category`;
 CREATE TABLE `category` (
   `category_id`   INT            NOT NULL  AUTO_INCREMENT,
   `department_id` INT            NOT NULL,
@@ -19,6 +20,7 @@ CREATE TABLE `category` (
 ) ENGINE=MyISAM;
 
 -- Create product table
+DROP TABLE IF EXISTS `product`;
 CREATE TABLE `product` (
   `product_id`       INT           NOT NULL  AUTO_INCREMENT,
   `name`             VARCHAR(100)  NOT NULL,
@@ -34,6 +36,7 @@ CREATE TABLE `product` (
 ) ENGINE=MyISAM;
 
 -- Create product_category table
+DROP TABLE IF EXISTS `product_category`;
 CREATE TABLE `product_category` (
   `product_id`  INT NOT NULL,
   `category_id` INT NOT NULL,
@@ -41,6 +44,7 @@ CREATE TABLE `product_category` (
 ) ENGINE=MyISAM;
 
 -- Create attribute table (stores attributes such as Size and Color)
+DROP TABLE IF EXISTS `attribute`;
 CREATE TABLE `attribute` (
   `attribute_id` INT          NOT NULL  AUTO_INCREMENT,
   `name`         VARCHAR(100) NOT NULL, -- E.g. Color, Size
@@ -49,6 +53,7 @@ CREATE TABLE `attribute` (
 
 
 -- Create attribute_value table (stores values such as Yellow or XXL)
+DROP TABLE IF EXISTS `attribute_value`;
 CREATE TABLE `attribute_value` (
   `attribute_value_id` INT          NOT NULL  AUTO_INCREMENT,
   `attribute_id`       INT          NOT NULL, -- The ID of the attribute
@@ -58,6 +63,7 @@ CREATE TABLE `attribute_value` (
 ) ENGINE=MyISAM;
 
 -- Create product_attribute table (associates attribute values to products)
+DROP TABLE IF EXISTS `product_attribute`;
 CREATE TABLE `product_attribute` (
   `product_id`         INT NOT NULL,
   `attribute_value_id` INT NOT NULL,
@@ -66,6 +72,7 @@ CREATE TABLE `product_attribute` (
 
 
 -- Create shopping_cart table
+DROP TABLE IF EXISTS `shopping_cart`;
 CREATE TABLE `shopping_cart` (
   `item_id`     INT           NOT NULL  AUTO_INCREMENT,
   `cart_id`     CHAR(32)      NOT NULL,
@@ -79,6 +86,7 @@ CREATE TABLE `shopping_cart` (
 ) ENGINE=MyISAM;
 
 -- Create orders table
+DROP TABLE IF EXISTS `orders`;
 CREATE TABLE `orders` (
   `order_id`     INT           NOT NULL  AUTO_INCREMENT,
   `total_amount` DECIMAL(10,2) NOT NULL  DEFAULT '0.00',
@@ -98,6 +106,7 @@ CREATE TABLE `orders` (
 ) ENGINE=MyISAM;
 
 -- Create order_details table
+DROP TABLE IF EXISTS `order_detail`;
 CREATE TABLE `order_detail` (
   `item_id`      INT           NOT NULL  AUTO_INCREMENT,
   `order_id`     INT           NOT NULL,
@@ -111,6 +120,7 @@ CREATE TABLE `order_detail` (
 ) ENGINE=MyISAM;
 
 -- Create shipping_region table
+DROP TABLE IF EXISTS `shipping_region`;
 CREATE TABLE `shipping_region` (
   `shipping_region_id` INT          NOT NULL  AUTO_INCREMENT,
   `shipping_region`    VARCHAR(100) NOT NULL,
@@ -118,11 +128,12 @@ CREATE TABLE `shipping_region` (
 ) ENGINE=MyISAM;
 
 -- Create customer table
+DROP TABLE IF EXISTS `customer`;
 CREATE TABLE `customer` (
-  `customer_id`        INT           NOT NULL AUTO_INCREMENT,
+  `customer_id`        BIGINT(20)           NOT NULL AUTO_INCREMENT,
   `name`               VARCHAR(50)   NOT NULL,
   `email`              VARCHAR(100)  NOT NULL,
-  `password`           VARCHAR(50)   NOT NULL,
+  `password`           VARCHAR(255)   NOT NULL,
   `credit_card`        TEXT,
   `address_1`          VARCHAR(100),
   `address_2`          VARCHAR(100),
@@ -140,6 +151,7 @@ CREATE TABLE `customer` (
 ) ENGINE=MyISAM;
 
 -- Create shipping table
+DROP TABLE IF EXISTS `shipping`;
 CREATE TABLE `shipping` (
   `shipping_id`        INT            NOT NULL AUTO_INCREMENT,
   `shipping_type`      VARCHAR(100)   NOT NULL,
@@ -150,6 +162,7 @@ CREATE TABLE `shipping` (
 ) ENGINE=MyISAM;
 
 -- Create tax table
+DROP TABLE IF EXISTS `tax`;
 CREATE TABLE `tax` (
   `tax_id`         INT            NOT NULL  AUTO_INCREMENT,
   `tax_type`       VARCHAR(100)   NOT NULL,
@@ -158,6 +171,7 @@ CREATE TABLE `tax` (
 ) ENGINE=MyISAM;
 
 -- Create audit table
+DROP TABLE IF EXISTS `audit`;
 CREATE TABLE `audit` (
   `audit_id`       INT      NOT NULL AUTO_INCREMENT,
   `order_id`       INT      NOT NULL,
@@ -169,6 +183,7 @@ CREATE TABLE `audit` (
 ) ENGINE=MyISAM;
 
 -- Create review table
+DROP TABLE IF EXISTS `review`;
 CREATE TABLE `review` (
   `review_id`   INT      NOT NULL  AUTO_INCREMENT,
   `customer_id` INT      NOT NULL,
@@ -355,74 +370,45 @@ INSERT INTO `tax` (`tax_id`, `tax_type`, `tax_percentage`) VALUES
        (2, 'No Tax',            0.00);
 
 -- Change DELIMITER to $$
-DELIMITER $$
+-- DELIMITER $$
 
 -- Create catalog_get_departments_list stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_departments_list;
 CREATE PROCEDURE catalog_get_departments_list()
 BEGIN
   SELECT department_id, name FROM department ORDER BY department_id;
-END$$
+END;
 
 -- Create catalog_get_department_details stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_department_details;
 CREATE PROCEDURE catalog_get_department_details(IN inDepartmentId INT)
 BEGIN
   SELECT name, description
   FROM   department
   WHERE  department_id = inDepartmentId;
-END$$
+END;
 
 -- Create catalog_get_categories_list stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_categories_list;
 CREATE PROCEDURE catalog_get_categories_list(IN inDepartmentId INT)
 BEGIN
   SELECT   category_id, name
   FROM     category
   WHERE    department_id = inDepartmentId
   ORDER BY category_id;
-END$$
+END;
 
 -- Create catalog_get_category_details stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_category_details;
 CREATE PROCEDURE catalog_get_category_details(IN inCategoryId INT)
 BEGIN
   SELECT name, description
   FROM   category
   WHERE  category_id = inCategoryId;
-END$$
-
--- Create catalog_count_products_list stored procedure
-CREATE PROCEDURE catalog_count_products_list()
-BEGIN
-  SELECT     COUNT(*) AS products_count
-  FROM       product
-  ORDER BY      product_id;
-END$$
-
--- Create catalog_get_products_list stored procedure
-CREATE PROCEDURE catalog_get_products_list(
-  IN inShortProductDescriptionLength INT,
-  IN inProductsPerPage INT, IN inStartItem INT
-)
-BEGIN
--- Prepare statement
-PREPARE statement FROM
- "SELECT   product_id, name,
-              IF(LENGTH(description) <= ?,
-                 description,
-                 CONCAT(LEFT(description, ?),
-                        '...')) AS description,
-              price, discounted_price, thumbnail
-     FROM     product
-     ORDER BY product_id
-     LIMIT    ?, ?";
-
-  SET @p1 = inShortProductDescriptionLength;
-  SET @p2 = inShortProductDescriptionLength;
-  SET @p3 = inStartItem;
-  SET @p4 = inProductsPerPage;
-
-  EXECUTE statement USING @p1, @p2, @p3, @p4;
-END$$
+END;
 
 -- Create catalog_count_products_in_category stored procedure
+DROP PROCEDURE IF EXISTS catalog_count_products_in_category;
 CREATE PROCEDURE catalog_count_products_in_category(IN inCategoryId INT)
 BEGIN
   SELECT     COUNT(*) AS categories_count
@@ -430,9 +416,10 @@ BEGIN
   INNER JOIN product_category pc
                ON p.product_id = pc.product_id
   WHERE      pc.category_id = inCategoryId;
-END$$
+END;
 
 -- Create catalog_get_products_in_category stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_products_in_category;
 CREATE PROCEDURE catalog_get_products_in_category(
   IN inCategoryId INT, IN inShortProductDescriptionLength INT,
   IN inProductsPerPage INT, IN inStartItem INT)
@@ -461,9 +448,10 @@ BEGIN
 
   -- Execute the statement
   EXECUTE statement USING @p1, @p2, @p3, @p4, @p5;
-END$$
+END;
 
 -- Create catalog_count_products_on_department stored procedure
+DROP PROCEDURE IF EXISTS catalog_count_products_on_department;
 CREATE PROCEDURE catalog_count_products_on_department(IN inDepartmentId INT)
 BEGIN
   SELECT DISTINCT COUNT(*) AS products_on_department_count
@@ -474,9 +462,10 @@ BEGIN
                     ON pc.category_id = c.category_id
   WHERE           (p.display = 2 OR p.display = 3)
                   AND c.department_id = inDepartmentId;
-END$$
+END;
 
 -- Create catalog_get_products_on_department stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_products_on_department;
 CREATE PROCEDURE catalog_get_products_on_department(
   IN inDepartmentId INT, IN inShortProductDescriptionLength INT,
   IN inProductsPerPage INT, IN inStartItem INT)
@@ -495,7 +484,7 @@ BEGIN
                        ON pc.category_id = c.category_id
      WHERE           (p.display = 2 OR p.display = 3)
                      AND c.department_id = ?
-     ORDER BY        p.display DESC
+     ORDER BY        p.product_id DESC
      LIMIT           ?, ?";
 
   SET @p1 = inShortProductDescriptionLength;
@@ -505,17 +494,19 @@ BEGIN
   SET @p5 = inProductsPerPage;
 
   EXECUTE statement USING @p1, @p2, @p3, @p4, @p5;
-END$$
+END;
 
 -- Create catalog_count_products_on_catalog stored procedure
+DROP PROCEDURE IF EXISTS catalog_count_products_on_catalog;
 CREATE PROCEDURE catalog_count_products_on_catalog()
 BEGIN
   SELECT COUNT(*) AS products_on_catalog_count
   FROM   product
   WHERE  display = 1 OR display = 3;
-END$$
+END;
 
 -- Create catalog_get_products_on_catalog stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_products_on_catalog;
 CREATE PROCEDURE catalog_get_products_on_catalog(
   IN inShortProductDescriptionLength INT,
   IN inProductsPerPage INT, IN inStartItem INT)
@@ -538,18 +529,21 @@ BEGIN
   SET @p4 = inProductsPerPage;
 
   EXECUTE statement USING @p1, @p2, @p3, @p4;
-END$$
+END;
 
 -- Create catalog_get_product_details stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_product_details;
+
 CREATE PROCEDURE catalog_get_product_details(IN inProductId INT)
 BEGIN
   SELECT product_id, name, description,
          price, discounted_price, image, image_2
   FROM   product
   WHERE  product_id = inProductId;
-END$$
+END;
 
 -- Create catalog_get_product_locations stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_product_locations;
 CREATE PROCEDURE catalog_get_product_locations(IN inProductId INT)
 BEGIN
   SELECT c.category_id, c.name AS category_name, c.department_id,
@@ -563,9 +557,10 @@ BEGIN
             FROM   product_category
             WHERE  product_id = inProductId);
             -- Subquery returns the category IDs a product belongs to
-END$$
+END;
 
 -- Create catalog_get_product_attributes stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_product_attributes;
 CREATE PROCEDURE catalog_get_product_attributes(IN inProductId INT)
 BEGIN
   SELECT     a.name AS attribute_name,
@@ -578,27 +573,31 @@ BEGIN
                 FROM   product_attribute
                 WHERE  product_id = inProductId)
   ORDER BY   a.name;
-END$$
+END;
 
 -- Create catalog_get_department_name stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_department_name;
 CREATE PROCEDURE catalog_get_department_name(IN inDepartmentId INT)
 BEGIN
   SELECT name FROM department WHERE department_id = inDepartmentId;
-END$$
+END;
 
 -- Create catalog_get_category_name stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_category_name;
 CREATE PROCEDURE catalog_get_category_name(IN inCategoryId INT)
 BEGIN
   SELECT name FROM category WHERE category_id = inCategoryId;
-END$$
+END;
 
 -- Create catalog_get_product_name stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_product_name;
 CREATE PROCEDURE catalog_get_product_name(IN inProductId INT)
 BEGIN
   SELECT name FROM product WHERE product_id = inProductId;
-END$$
+END;
 
 -- Create catalog_count_search_result stored procedure
+DROP PROCEDURE IF EXISTS catalog_count_search_result;
 CREATE PROCEDURE catalog_count_search_result(
   IN inSearchString TEXT, IN inAllWords VARCHAR(3))
 BEGIN
@@ -617,9 +616,10 @@ BEGIN
   SET @p1 = inSearchString;
 
   EXECUTE statement USING @p1;
-END$$
+END;
 
 -- Create catalog_search stored procedure
+DROP PROCEDURE IF EXISTS catalog_search;
 CREATE PROCEDURE catalog_search(
   IN inSearchString TEXT, IN inAllWords VARCHAR(3),
   IN inShortProductDescriptionLength INT,
@@ -659,34 +659,38 @@ BEGIN
   SET @p4 = inProductsPerPage;
 
   EXECUTE statement USING @p1, @p1, @p2, @p2, @p3, @p4;
-END$$
+END;
 
 -- Create catalog_get_departments stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_departments;
 CREATE PROCEDURE catalog_get_departments()
 BEGIN
   SELECT   department_id, name, description
   FROM     department
   ORDER BY department_id;
-END$$
+END;
 
 -- Create catalog_add_department stored procedure
+DROP PROCEDURE IF EXISTS catalog_add_department;
 CREATE PROCEDURE catalog_add_department(
   IN inName VARCHAR(100), IN inDescription VARCHAR(1000))
 BEGIN
   INSERT INTO department (name, description)
          VALUES (inName, inDescription);
-END$$
+END;
 
 -- Create catalog_update_department stored procedure
+DROP PROCEDURE IF EXISTS catalog_update_department;
 CREATE PROCEDURE catalog_update_department(IN inDepartmentId INT,
   IN inName VARCHAR(100), IN inDescription VARCHAR(1000))
 BEGIN
   UPDATE department
   SET    name = inName, description = inDescription
   WHERE  department_id = inDepartmentId;
-END$$
+END;
 
 -- Create catalog_delete_department stored procedure
+DROP PROCEDURE IF EXISTS catalog_delete_department;
 CREATE PROCEDURE catalog_delete_department(IN inDepartmentId INT)
 BEGIN
   DECLARE categoryRowsCount INT;
@@ -703,35 +707,39 @@ BEGIN
   ELSE
     SELECT -1;
   END IF;
-END$$
+END;
 
 -- Create catalog_get_department_categories stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_department_categories;
 CREATE PROCEDURE catalog_get_department_categories(IN inDepartmentId INT)
 BEGIN
-  SELECT   category_id, name, description
+  SELECT   category_id, name, description, department_id
   FROM     category
   WHERE    department_id = inDepartmentId
   ORDER BY category_id;
-END$$
+END;
 
 -- Create catalog_add_category stored procedure
+DROP PROCEDURE IF EXISTS catalog_add_category;
 CREATE PROCEDURE catalog_add_category(IN inDepartmentId INT,
   IN inName VARCHAR(100), IN inDescription VARCHAR(1000))
 BEGIN
   INSERT INTO category (department_id, name, description)
          VALUES (inDepartmentId, inName, inDescription);
-END$$
+END;
 
 -- Create catalog_update_category stored procedure
+DROP PROCEDURE IF EXISTS catalog_update_category;
 CREATE PROCEDURE catalog_update_category(IN inCategoryId INT,
   IN inName VARCHAR(100), IN inDescription VARCHAR(1000))
 BEGIN
     UPDATE category
     SET    name = inName, description = inDescription
     WHERE  category_id = inCategoryId;
-END$$
+END;
 
 -- Create catalog_delete_category stored procedure
+DROP PROCEDURE IF EXISTS catalog_delete_category;
 CREATE PROCEDURE catalog_delete_category(IN inCategoryId INT)
 BEGIN
   DECLARE productCategoryRowsCount INT;
@@ -750,28 +758,32 @@ BEGIN
   ELSE
     SELECT -1;
   END IF;
-END$$
+END;
 
 -- Create catalog_get_attributes stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_attributes;
 CREATE PROCEDURE catalog_get_attributes()
 BEGIN
   SELECT attribute_id, name FROM attribute ORDER BY attribute_id;
-END$$
+END;
 
 -- Create catalog_add_attribute stored procedure
+DROP PROCEDURE IF EXISTS catalog_add_attribute;
 CREATE PROCEDURE catalog_add_attribute(IN inName VARCHAR(100))
 BEGIN
   INSERT INTO attribute (name) VALUES (inName);
-END$$
+END;
 
 -- Create catalog_update_attribute stored procedure
+DROP PROCEDURE IF EXISTS catalog_update_attribute;
 CREATE PROCEDURE catalog_update_attribute(
   IN inAttributeId INT, IN inName VARCHAR(100))
 BEGIN
   UPDATE attribute SET name = inName WHERE attribute_id = inAttributeId;
-END$$
+END;
 
 -- Create catalog_delete_attribute stored procedure
+DROP PROCEDURE IF EXISTS catalog_delete_attribute;
 CREATE PROCEDURE catalog_delete_attribute(IN inAttributeId INT)
 BEGIN
   DECLARE attributeRowsCount INT;
@@ -788,43 +800,48 @@ BEGIN
   ELSE
     SELECT -1;
   END IF;
-END$$
+END;
 
 -- Create catalog_get_attribute_details stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_attribute_details;
 CREATE PROCEDURE catalog_get_attribute_details(IN inAttributeId INT)
 BEGIN
   SELECT attribute_id, name
   FROM   attribute
   WHERE  attribute_id = inAttributeId;
-END$$
+END;
 
 -- Create catalog_get_attribute_values stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_attribute_values;
 CREATE PROCEDURE catalog_get_attribute_values(IN inAttributeId INT)
 BEGIN
   SELECT   attribute_value_id, value
   FROM     attribute_value
   WHERE    attribute_id = inAttributeId
   ORDER BY attribute_id;
-END$$
+END;
 
 -- Create catalog_add_attribute_value stored procedure
+DROP PROCEDURE IF EXISTS catalog_add_attribute_value;
 CREATE PROCEDURE catalog_add_attribute_value(
   IN inAttributeId INT, IN inValue VARCHAR(100))
 BEGIN
   INSERT INTO attribute_value (attribute_id, value)
          VALUES (inAttributeId, inValue);
-END$$
+END;
 
 -- Create catalog_update_attribute_value stored procedure
+DROP PROCEDURE IF EXISTS catalog_update_attribute_value;
 CREATE PROCEDURE catalog_update_attribute_value(
   IN inAttributeValueId INT, IN inValue VARCHAR(100))
 BEGIN
     UPDATE attribute_value
     SET    value = inValue
     WHERE  attribute_value_id = inAttributeValueId;
-END$$
+END;
 
 -- Create catalog_delete_attribute_value stored procedure
+DROP PROCEDURE IF EXISTS catalog_delete_attribute_value;
 CREATE PROCEDURE catalog_delete_attribute_value(IN inAttributeValueId INT)
 BEGIN
   DECLARE productAttributeRowsCount INT;
@@ -843,9 +860,10 @@ BEGIN
   ELSE
     SELECT -1;
   END IF;
-END$$
+END;
 
 -- Create catalog_get_category_products stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_category_products;
 CREATE PROCEDURE catalog_get_category_products(IN inCategoryId INT)
 BEGIN
   SELECT     p.product_id, p.name, p.description, p.price,
@@ -855,9 +873,10 @@ BEGIN
                ON p.product_id = pc.product_id
   WHERE      pc.category_id = inCategoryId
   ORDER BY   p.product_id;
-END$$
+END;
 
 -- Create catalog_add_product_to_category stored procedure
+DROP PROCEDURE IF EXISTS catalog_add_product_to_category;
 CREATE PROCEDURE catalog_add_product_to_category(IN inCategoryId INT,
   IN inName VARCHAR(100), IN inDescription VARCHAR(1000),
   IN inPrice DECIMAL(10, 2))
@@ -871,9 +890,10 @@ BEGIN
 
   INSERT INTO product_category (product_id, category_id)
          VALUES (productLastInsertId, inCategoryId);
-END$$
+END;
 
 -- Create catalog_update_product stored procedure
+DROP PROCEDURE IF EXISTS catalog_update_product;
 CREATE PROCEDURE catalog_update_product(IN inProductId INT,
   IN inName VARCHAR(100), IN inDescription VARCHAR(1000),
   IN inPrice DECIMAL(10, 2), IN inDiscountedPrice DECIMAL(10, 2))
@@ -882,9 +902,10 @@ BEGIN
   SET    name = inName, description = inDescription, price = inPrice,
          discounted_price = inDiscountedPrice
   WHERE  product_id = inProductId;
-END$$
+END;
 
 -- Create catalog_remove_product_from_category stored procedure
+DROP PROCEDURE IF EXISTS catalog_remove_product_from_category;
 CREATE PROCEDURE catalog_remove_product_from_category(
   IN inProductId INT, IN inCategoryId INT)
 BEGIN
@@ -905,26 +926,29 @@ BEGIN
 
     SELECT 1;
   END IF;
-END$$
+END;
 
 -- Create catalog_get_categories stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_categories;
 CREATE PROCEDURE catalog_get_categories()
 BEGIN
   SELECT   category_id, name, description
   FROM     category
   ORDER BY category_id;
-END$$
+END;
 
 -- Create catalog_get_product_info stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_product_info;
 CREATE PROCEDURE catalog_get_product_info(IN inProductId INT)
 BEGIN
   SELECT product_id, name, description, price, discounted_price,
          image, image_2, thumbnail, display
   FROM   product
   WHERE  product_id = inProductId;
-END$$
+END;
 
 -- Create catalog_get_categories_for_product stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_categories_for_product;
 CREATE PROCEDURE catalog_get_categories_for_product(IN inProductId INT)
 BEGIN
   SELECT   c.category_id, c.department_id, c.name
@@ -933,24 +957,27 @@ BEGIN
              ON c.category_id = pc.category_id
   WHERE    pc.product_id = inProductId
   ORDER BY category_id;
-END$$
+END;
 
 -- Create catalog_set_product_display_option stored procedure
+DROP PROCEDURE IF EXISTS catalog_set_product_display_option;
 CREATE PROCEDURE catalog_set_product_display_option(
   IN inProductId INT, IN inDisplay SMALLINT)
 BEGIN
   UPDATE product SET display = inDisplay WHERE product_id = inProductId;
-END$$
+END;
 
 -- Create catalog_assign_product_to_category stored procedure
+DROP PROCEDURE IF EXISTS catalog_assign_product_to_category;
 CREATE PROCEDURE catalog_assign_product_to_category(
   IN inProductId INT, IN inCategoryId INT)
 BEGIN
   INSERT INTO product_category (product_id, category_id)
          VALUES (inProductId, inCategoryId);
-END$$
+END;
 
 -- Create catalog_move_product_to_category stored procedure
+DROP PROCEDURE IF EXISTS catalog_move_product_to_category;
 CREATE PROCEDURE catalog_move_product_to_category(IN inProductId INT,
   IN inSourceCategoryId INT, IN inTargetCategoryId INT)
 BEGIN
@@ -958,9 +985,10 @@ BEGIN
   SET    category_id = inTargetCategoryId
   WHERE  product_id = inProductId
          AND category_id = inSourceCategoryId;
-END$$
+END;
 
 -- Create catalog_get_attributes_not_assigned_to_product stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_attributes_not_assigned_to_product;
 CREATE PROCEDURE catalog_get_attributes_not_assigned_to_product(
   IN inProductId INT)
 BEGIN
@@ -974,49 +1002,55 @@ BEGIN
               FROM   product_attribute
               WHERE  product_id = inProductId)
   ORDER BY   attribute_name, av.attribute_value_id;
-END$$
+END;
 
 -- Create catalog_assign_attribute_value_to_product stored procedure
+DROP PROCEDURE IF EXISTS catalog_assign_attribute_value_to_product;
 CREATE PROCEDURE catalog_assign_attribute_value_to_product(
   IN inProductId INT, IN inAttributeValueId INT)
 BEGIN
   INSERT INTO product_attribute (product_id, attribute_value_id)
          VALUES (inProductId, inAttributeValueId);
-END$$
+END;
 
 -- Create catalog_remove_product_attribute_value stored procedure
+DROP PROCEDURE IF EXISTS catalog_remove_product_attribute_value;
 CREATE PROCEDURE catalog_remove_product_attribute_value(
   IN inProductId INT, IN inAttributeValueId INT)
 BEGIN
   DELETE FROM product_attribute
   WHERE       product_id = inProductId AND
               attribute_value_id = inAttributeValueId;
-END$$
+END;
 
 -- Create catalog_set_image stored procedure
+DROP PROCEDURE IF EXISTS catalog_set_image;
 CREATE PROCEDURE catalog_set_image(
   IN inProductId INT, IN inImage VARCHAR(150))
 BEGIN
   UPDATE product SET image = inImage WHERE product_id = inProductId;
-END$$
+END;
 
 -- Create catalog_set_image_2 stored procedure
+DROP PROCEDURE IF EXISTS catalog_set_image_2;
 CREATE PROCEDURE catalog_set_image_2(
   IN inProductId INT, IN inImage VARCHAR(150))
 BEGIN
   UPDATE product SET image_2 = inImage WHERE product_id = inProductId;
-END$$
+END;
 
 -- Create catalog_set_thumbnail stored procedure
+DROP PROCEDURE IF EXISTS catalog_set_thumbnail;
 CREATE PROCEDURE catalog_set_thumbnail(
   IN inProductId INT, IN inThumbnail VARCHAR(150))
 BEGIN
   UPDATE product
   SET    thumbnail = inThumbnail
   WHERE  product_id = inProductId;
-END$$
+END;
 
 -- Create shopping_cart_add_product stored procedure
+DROP PROCEDURE IF EXISTS shopping_cart_add_product;
 CREATE PROCEDURE shopping_cart_add_product(IN inCartId CHAR(32),
   IN inProductId INT, IN inAttributes VARCHAR(1000))
 BEGIN
@@ -1042,9 +1076,10 @@ BEGIN
            AND product_id = inProductId
            AND attributes = inAttributes;
   END IF;
-END$$
+END;
 
 -- Create shopping_cart_update_product stored procedure
+DROP PROCEDURE IF EXISTS shopping_cart_update;
 CREATE PROCEDURE shopping_cart_update(IN inItemId INT, IN inQuantity INT)
 BEGIN
   IF inQuantity > 0 THEN
@@ -1054,15 +1089,17 @@ BEGIN
   ELSE
     CALL shopping_cart_remove_product(inItemId);
   END IF;
-END$$
+END;
 
 -- Create shopping_cart_remove_product stored procedure
+DROP PROCEDURE IF EXISTS shopping_cart_remove_product;
 CREATE PROCEDURE shopping_cart_remove_product(IN inItemId INT)
 BEGIN
   DELETE FROM shopping_cart WHERE item_id = inItemId;
-END$$
+END;
 
 -- Create shopping_cart_get_products stored procedure
+DROP PROCEDURE IF EXISTS shopping_cart_get_products;
 CREATE PROCEDURE shopping_cart_get_products(IN inCartId CHAR(32))
 BEGIN
   SELECT     sc.item_id, p.name, sc.attributes,
@@ -1074,9 +1111,10 @@ BEGIN
   INNER JOIN product p
                ON sc.product_id = p.product_id
   WHERE      sc.cart_id = inCartId AND sc.buy_now;
-END$$
+END;
 
 -- Create shopping_cart_get_saved_products stored procedure
+DROP PROCEDURE IF EXISTS shopping_cart_get_saved_products;
 CREATE PROCEDURE shopping_cart_get_saved_products(IN inCartId CHAR(32))
 BEGIN
   SELECT     sc.item_id, p.name, sc.attributes,
@@ -1085,9 +1123,10 @@ BEGIN
   INNER JOIN product p
                ON sc.product_id = p.product_id
   WHERE      sc.cart_id = inCartId AND NOT sc.buy_now;
-END$$
+END;
 
 -- Create shopping_cart_get_total_amount stored procedure
+DROP PROCEDURE IF EXISTS shopping_cart_get_total_amount;
 CREATE PROCEDURE shopping_cart_get_total_amount(IN inCartId CHAR(32))
 BEGIN
   SELECT     SUM(COALESCE(NULLIF(p.discounted_price, 0), p.price)
@@ -1096,34 +1135,38 @@ BEGIN
   INNER JOIN product p
                ON sc.product_id = p.product_id
   WHERE      sc.cart_id = inCartId AND sc.buy_now;
-END$$
+END;
 
 -- Create shopping_cart_save_product_for_later stored procedure
+DROP PROCEDURE IF EXISTS shopping_cart_save_product_for_later;
 CREATE PROCEDURE shopping_cart_save_product_for_later(IN inItemId INT)
 BEGIN
   UPDATE shopping_cart
   SET    buy_now = false, quantity = 1
   WHERE  item_id = inItemId;
-END$$
+END;
 
 -- Create shopping_cart_move_product_to_cart stored procedure
+DROP PROCEDURE IF EXISTS shopping_cart_move_product_to_cart;
 CREATE PROCEDURE shopping_cart_move_product_to_cart(IN inItemId INT)
 BEGIN
   UPDATE shopping_cart
   SET    buy_now = true, added_on = NOW()
   WHERE  item_id = inItemId;
-END$$
+END;
 
 -- Create catalog_delete_product stored procedure
+DROP PROCEDURE IF EXISTS catalog_delete_product;
 CREATE PROCEDURE catalog_delete_product(IN inProductId INT)
 BEGIN
   DELETE FROM product_attribute WHERE product_id = inProductId;
   DELETE FROM product_category WHERE product_id = inProductId;
   DELETE FROM shopping_cart WHERE product_id = inProductId;
   DELETE FROM product WHERE product_id = inProductId;
-END$$
+END;
 
 -- Create shopping_cart_count_old_carts stored procedure
+DROP PROCEDURE IF EXISTS shopping_cart_count_old_carts;
 CREATE PROCEDURE shopping_cart_count_old_carts(IN inDays INT)
 BEGIN
   SELECT COUNT(cart_id) AS old_shopping_carts_count
@@ -1132,9 +1175,10 @@ BEGIN
           GROUP BY cart_id
           HAVING   DATE_SUB(NOW(), INTERVAL inDays DAY) >= MAX(added_on))
          AS old_carts;
-END$$
+END;
 
 -- Create shopping_cart_delete_old_carts stored procedure
+DROP PROCEDURE IF EXISTS shopping_cart_delete_old_carts;
 CREATE PROCEDURE shopping_cart_delete_old_carts(IN inDays INT)
 BEGIN
   DELETE FROM shopping_cart
@@ -1146,24 +1190,27 @@ BEGIN
                    HAVING   DATE_SUB(NOW(), INTERVAL inDays DAY) >=
                             MAX(added_on))
                   AS sc);
-END$$
+END;
 
 -- Create shopping_cart_empty stored procedure
+DROP PROCEDURE IF EXISTS shopping_cart_empty;
 CREATE PROCEDURE shopping_cart_empty(IN inCartId CHAR(32))
 BEGIN
   DELETE FROM shopping_cart WHERE cart_id = inCartId;
-END$$
+END;
 
 -- Create orders_get_order_details stored procedure
+DROP PROCEDURE IF EXISTS orders_get_order_details;
 CREATE PROCEDURE orders_get_order_details(IN inOrderId INT)
 BEGIN
   SELECT order_id, product_id, attributes, product_name,
          quantity, unit_cost, (quantity * unit_cost) AS subtotal
   FROM   order_detail
   WHERE  order_id = inOrderId;
-END$$
+END;
 
 -- Create catalog_get_recommendations stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_recommendations;
 CREATE PROCEDURE catalog_get_recommendations(
   IN inProductId INT, IN inShortProductDescriptionLength INT)
 BEGIN
@@ -1184,9 +1231,10 @@ BEGIN
   SET @p2 = inProductId;
 
   EXECUTE statement USING @p1, @p1, @p2, @p2;
-END$$
+END;
 
 -- Create shopping_cart_get_recommendations stored procedure
+DROP PROCEDURE IF EXISTS shopping_cart_get_recommendations;
 CREATE PROCEDURE shopping_cart_get_recommendations(
   IN inCartId CHAR(32), IN inShortProductDescriptionLength INT)
 BEGIN
@@ -1221,36 +1269,40 @@ BEGIN
   SET @p2 = inCartId;
 
   EXECUTE statement USING @p1, @p1, @p2, @p2;
-END$$
+END;
 
 -- Create customer_get_login_info stored procedure
+DROP PROCEDURE IF EXISTS customer_get_login_info;
 CREATE PROCEDURE customer_get_login_info(IN inEmail VARCHAR(100))
 BEGIN
   SELECT customer_id, password FROM customer WHERE email = inEmail;
-END$$
+END;
 
 -- Create customer_add stored procedure
-CREATE PROCEDURE customer_add(IN inName VARCHAR(50),
-  IN inEmail VARCHAR(100), IN inPassword VARCHAR(50))
+DROP PROCEDURE IF EXISTS customer_add;
+CREATE PROCEDURE customer_add(IN inName VARCHAR(255),
+  IN inEmail VARCHAR(100), IN inPassword VARCHAR(255))
 BEGIN
   INSERT INTO customer (name, email, password)
          VALUES (inName, inEmail, inPassword);
 
-  SELECT LAST_INSERT_ID();
-END$$
+  SELECT * FROM customer WHERE email = inEmail;
+END;
 
 -- Create customer_get_customer stored procedure
-CREATE PROCEDURE customer_get_customer(IN inCustomerId INT)
+DROP PROCEDURE IF EXISTS customer_get_customer;
+CREATE PROCEDURE customer_get_customer(IN inCustomerId BIGINT)
 BEGIN
   SELECT customer_id, name, email, password, credit_card,
          address_1, address_2, city, region, postal_code, country,
          shipping_region_id, day_phone, eve_phone, mob_phone
   FROM   customer
   WHERE  customer_id = inCustomerId;
-END$$
+END;
 
 -- Create customer_update_account stored procedure
-CREATE PROCEDURE customer_update_account(IN inCustomerId INT,
+DROP PROCEDURE IF EXISTS customer_update_account;
+CREATE PROCEDURE customer_update_account(IN inCustomerId BIGINT,
   IN inName VARCHAR(50), IN inEmail VARCHAR(100),
   IN inPassword VARCHAR(50), IN inDayPhone VARCHAR(100),
   IN inEvePhone VARCHAR(100), IN inMobPhone VARCHAR(100))
@@ -1260,25 +1312,29 @@ BEGIN
          password = inPassword, day_phone = inDayPhone,
          eve_phone = inEvePhone, mob_phone = inMobPhone
   WHERE  customer_id = inCustomerId;
-END$$
+  SELECT * FROM customer WHERE customer_id = inCustomerId;
+END;
 
 -- Create customer_update_credit_card stored procedure
+DROP PROCEDURE IF EXISTS customer_update_credit_card;
 CREATE PROCEDURE customer_update_credit_card(
-  IN inCustomerId INT, IN inCreditCard TEXT)
+  IN inCustomerId BIGINT, IN inCreditCard TEXT)
 BEGIN
   UPDATE customer
   SET    credit_card = inCreditCard
   WHERE  customer_id = inCustomerId;
-END$$
+END;
 
 -- Create customer_get_shipping_regions stored procedure
+DROP PROCEDURE IF EXISTS customer_get_shipping_regions;
 CREATE PROCEDURE customer_get_shipping_regions()
 BEGIN
   SELECT shipping_region_id, shipping_region FROM shipping_region;
-END$$
+END;
 
 -- Create customer_update_address stored procedure
-CREATE PROCEDURE customer_update_address(IN inCustomerId INT,
+DROP PROCEDURE IF EXISTS customer_update_address;
+CREATE PROCEDURE customer_update_address(IN inCustomerId BIGINT,
   IN inAddress1 VARCHAR(100), IN inAddress2 VARCHAR(100),
   IN inCity VARCHAR(100), IN inRegion VARCHAR(100),
   IN inPostalCode VARCHAR(100), IN inCountry VARCHAR(100),
@@ -1289,9 +1345,11 @@ BEGIN
          region = inRegion, postal_code = inPostalCode,
          country = inCountry, shipping_region_id = inShippingRegionId
   WHERE  customer_id = inCustomerId;
-END$$
+  SELECT * FROM customer WHERE customer_id = inCustomerId;
+END;
 
 -- Create orders_get_most_recent_orders stored procedure
+DROP PROCEDURE IF EXISTS orders_get_most_recent_orders;
 CREATE PROCEDURE orders_get_most_recent_orders(IN inHowMany INT)
 BEGIN
   PREPARE statement FROM
@@ -1306,9 +1364,10 @@ BEGIN
   SET @p1 = inHowMany;
 
   EXECUTE statement USING @p1;
-END$$
+END;
 
 -- Create orders_get_orders_between_dates stored procedure
+DROP PROCEDURE IF EXISTS orders_get_orders_between_dates;
 CREATE PROCEDURE orders_get_orders_between_dates(
   IN inStartDate DATETIME, IN inEndDate DATETIME)
 BEGIN
@@ -1319,9 +1378,10 @@ BEGIN
                ON o.customer_id = c.customer_id
   WHERE      o.created_on >= inStartDate AND o.created_on <= inEndDate
   ORDER BY   o.created_on DESC;
-END$$
+END;
 
 -- Create orders_get_orders_by_status stored procedure
+DROP PROCEDURE IF EXISTS orders_get_orders_by_status;
 CREATE PROCEDURE orders_get_orders_by_status(IN inStatus INT)
 BEGIN
   SELECT     o.order_id, o.total_amount, o.created_on,
@@ -1331,10 +1391,11 @@ BEGIN
                ON o.customer_id = c.customer_id
   WHERE      o.status = inStatus
   ORDER BY   o.created_on DESC;
-END$$
+END;
 
 -- Create orders_get_by_customer_id stored procedure
-CREATE PROCEDURE orders_get_by_customer_id(IN inCustomerId INT)
+DROP PROCEDURE IF EXISTS orders_get_by_customer_id;
+CREATE PROCEDURE orders_get_by_customer_id(IN inCustomerId BIGINT)
 BEGIN
   SELECT     o.order_id, o.total_amount, o.created_on,
              o.shipped_on, o.status, c.name
@@ -1343,9 +1404,10 @@ BEGIN
                ON o.customer_id = c.customer_id
   WHERE      o.customer_id = inCustomerId
   ORDER BY   o.created_on DESC;
-END$$
+END;
 
 -- Create orders_get_order_short_details stored procedure
+DROP PROCEDURE IF EXISTS orders_get_order_short_details;
 CREATE PROCEDURE orders_get_order_short_details(IN inOrderId INT)
 BEGIN
   SELECT      o.order_id, o.total_amount, o.created_on,
@@ -1354,17 +1416,19 @@ BEGIN
   INNER JOIN  customer c
                 ON o.customer_id = c.customer_id
   WHERE       o.order_id = inOrderId;
-END$$
+END;
 
 -- Create customer_get_customers_list stored procedure
+DROP PROCEDURE IF EXISTS customer_get_customers_list;
 CREATE PROCEDURE customer_get_customers_list()
 BEGIN
   SELECT customer_id, name FROM customer ORDER BY name ASC;
-END$$
+END;
 
 -- Create shopping_cart_create_order stored procedure
+DROP PROCEDURE IF EXISTS shopping_cart_create_order;
 CREATE PROCEDURE shopping_cart_create_order(IN inCartId CHAR(32),
-  IN inCustomerId INT, IN inShippingId INT, IN inTaxId INT)
+  IN inCustomerId BIGINT, IN inShippingId INT, IN inTaxId INT)
 BEGIN
   DECLARE orderId INT;
 
@@ -1396,9 +1460,10 @@ BEGIN
 
   -- Return the Order ID
   SELECT orderId;
-END$$
+END;
 
 -- Create orders_get_order_info stored procedure
+DROP PROCEDURE IF EXISTS orders_get_order_info;
 CREATE PROCEDURE orders_get_order_info(IN inOrderId INT)
 BEGIN
   SELECT     o.order_id, o.total_amount, o.created_on, o.shipped_on,
@@ -1411,46 +1476,52 @@ BEGIN
   INNER JOIN shipping s
                ON s.shipping_id = o.shipping_id
   WHERE      o.order_id = inOrderId;
-END$$
+END;
 
 -- Create orders_get_shipping_info stored procedure
+DROP PROCEDURE IF EXISTS orders_get_shipping_info;
 CREATE PROCEDURE orders_get_shipping_info(IN inShippingRegionId INT)
 BEGIN
   SELECT shipping_id, shipping_type, shipping_cost, shipping_region_id
   FROM   shipping
   WHERE  shipping_region_id = inShippingRegionId;
-END$$
+END;
 
 -- Create orders_create_audit stored procedure
+DROP PROCEDURE IF EXISTS orders_create_audit;
 CREATE PROCEDURE orders_create_audit(IN inOrderId INT,
   IN inMessage TEXT, IN inCode INT)
 BEGIN
   INSERT INTO audit (order_id, created_on, message, code)
          VALUES (inOrderId, NOW(), inMessage, inCode);
-END$$
+END;
 
 -- Create orders_update_status stored procedure
+DROP PROCEDURE IF EXISTS orders_update_status;
 CREATE PROCEDURE orders_update_status(IN inOrderId INT, IN inStatus INT)
 BEGIN
   UPDATE orders SET status = inStatus WHERE order_id = inOrderId;
-END$$
+END;
 
 -- Create orders_set_auth_code stored procedure
+DROP PROCEDURE IF EXISTS orders_set_auth_code;
 CREATE PROCEDURE orders_set_auth_code(IN inOrderId INT,
   IN inAuthCode VARCHAR(50), IN inReference VARCHAR(50))
 BEGIN
   UPDATE orders
   SET    auth_code = inAuthCode, reference = inReference
   WHERE  order_id = inOrderId;
-END$$
+END;
 
 -- Create orders_set_date_shipped stored procedure
+DROP PROCEDURE IF EXISTS orders_set_date_shipped;
 CREATE PROCEDURE orders_set_date_shipped(IN inOrderId INT)
 BEGIN
   UPDATE orders SET shipped_on = NOW() WHERE order_id = inOrderId;
-END$$
+END;
 
 -- Create orders_update_order stored procedure
+DROP PROCEDURE IF EXISTS orders_update_order;
 CREATE PROCEDURE orders_update_order(IN inOrderId INT, IN inStatus INT,
   IN inComments VARCHAR(255), IN inAuthCode VARCHAR(50),
   IN inReference VARCHAR(50))
@@ -1472,17 +1543,19 @@ BEGIN
   ELSEIF inStatus > 6 AND currentDateShipped IS NULL THEN
     UPDATE orders SET shipped_on = NOW() WHERE order_id = inOrderId;
   END IF;
-END$$
+END;
 
 -- Create orders_get_audit_trail stored procedure
+DROP PROCEDURE IF EXISTS orders_get_audit_trail;
 CREATE PROCEDURE orders_get_audit_trail(IN inOrderId INT)
 BEGIN
   SELECT audit_id, order_id, created_on, message, code
   FROM   audit
   WHERE  order_id = inOrderId;
-END$$
+END;
 
 -- Create catalog_get_product_reviews stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_product_reviews;
 CREATE PROCEDURE catalog_get_product_reviews(IN inProductId INT)
 BEGIN
   SELECT     c.name, r.review, r.rating, r.created_on
@@ -1491,15 +1564,62 @@ BEGIN
                ON c.customer_id = r.customer_id
   WHERE      r.product_id = inProductId
   ORDER BY   r.created_on DESC;
-END$$
+END;
 
 -- Create catalog_create_product_review stored procedure
-CREATE PROCEDURE catalog_create_product_review(IN inCustomerId INT,
+DROP PROCEDURE IF EXISTS catalog_create_product_review;
+CREATE PROCEDURE catalog_create_product_review(IN inCustomerId BIGINT,
   IN inProductId INT, IN inReview TEXT, IN inRating SMALLINT)
 BEGIN
   INSERT INTO review (customer_id, product_id, review, rating, created_on)
          VALUES (inCustomerId, inProductId, inReview, inRating, NOW());
-END$$
+END;
+
+-- Create catalog_count_products_list stored procedure
+DROP PROCEDURE IF EXISTS catalog_count_products_list;
+CREATE PROCEDURE catalog_count_products_list()
+BEGIN
+  SELECT     COUNT(*) AS products_count
+  FROM       product
+  ORDER BY      product_id;
+END;
+
+-- Create catalog_get_products_list stored procedure
+DROP PROCEDURE IF EXISTS catalog_get_products_list;
+CREATE PROCEDURE catalog_get_products_list(
+  IN inShortProductDescriptionLength INT,
+  IN inProductsPerPage INT, IN inStartItem INT
+)
+BEGIN
+-- Prepare statement
+PREPARE statement FROM
+ "SELECT   product_id, name,
+              IF(LENGTH(description) <= ?,
+                 description,
+                 CONCAT(LEFT(description, ?),
+                        '...')) AS description,
+              price, discounted_price, thumbnail
+     FROM     product
+     ORDER BY product_id
+     LIMIT    ?, ?";
+
+  SET @p1 = inShortProductDescriptionLength;
+  SET @p2 = inShortProductDescriptionLength;
+  SET @p3 = inStartItem;
+  SET @p4 = inProductsPerPage;
+
+  EXECUTE statement USING @p1, @p2, @p3, @p4;
+END;
+
+DROP PROCEDURE IF EXISTS customer_add_from_social;
+CREATE PROCEDURE `customer_add_from_social`(IN inCustomerId BIGINT,IN inName VARCHAR(150),
+  IN inEmail VARCHAR(100), IN inPassword VARCHAR(150))
+BEGIN
+  INSERT INTO customer (customer_id, name, email, password)
+         VALUES (inCustomerId, inName, inEmail, inPassword);
+
+  SELECT * FROM customer WHERE customer_id = inCustomerId;
+END;
 
 -- Change back DELIMITER to ;
-DELIMITER ;
+-- DELIMITER ;
