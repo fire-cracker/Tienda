@@ -120,4 +120,36 @@ describe('Tests for get Product', () => {
       expect(res.body.error.length > 0).to.equal(true);
     });
   });
+
+  describe('Tests to get a product', () => {
+    it('should return a product with the details', async () => {
+      const res = await chai.request(app)
+        .get('/api/products/1/details');
+
+      expect(res).to.have.status(200);
+      expect(res.body).to.be.an.instanceof(Object)
+        .and.to.have.property('productDetails')
+        .that.includes.all.keys([
+          'product_id', 'name', 'description', 'price', 'discounted_price', 'image', 'image_2'
+        ]);
+    });
+
+    it('should return error message if product does not exist', async () => {
+      const res = await chai.request(app)
+        .get('/api/products/500/details');
+
+      expect(res).to.have.status(404);
+      expect(res.body.message).to.equal('Product does not exist');
+      expect(res.body.code).to.equal('PRO_01');
+      expect(res.body.field).to.equal('Product Id');
+    });
+
+    it('should return error if parameters to get all products are incorrect', async () => {
+      const res = await chai.request(app)
+        .get('/api/products/h/details');
+      expect(res).to.have.status(422);
+      expect(res.body.error).to.equal('"productId" must be a number');
+      expect(res.body.field).to.equal('productId');
+    });
+  });
 });
