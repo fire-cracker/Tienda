@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import chalk from 'chalk';
 import { createLogger, format, transports } from 'winston';
 import productsRouter from './server/api/routes/productsRouter';
+import shoppingCartRouter from './server/api/routes/shoppingCartRouter';
 
 const logger = createLogger({
   level: 'debug',
@@ -37,7 +38,8 @@ app.use(
 );
 
 app.use(express.static(`${__dirname}/public`));
-app.use('/api/products', productsRouter);
+app.use('/products', productsRouter);
+app.use('/shoppingcart', shoppingCartRouter);
 
 app.get('/', (req, res) => res.status(200).send({
   status: 'connection successful',

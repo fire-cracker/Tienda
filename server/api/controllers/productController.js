@@ -168,9 +168,7 @@ export const getProductDetails = async (req, res) => {
     const [productDetails] = await sequelize.query(`CALL catalog_get_product_details(${productId})`);
 
     if (productDetails) {
-      return res.status(200).send({
-        productDetails
-      });
+      return res.status(200).send(productDetails);
     }
     return res.status(404).send({
       code: 'PRO_01',
