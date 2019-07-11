@@ -70,7 +70,7 @@ export const getCatgoryProduct = async (req, res) => {
       count: productsCount,
       rows: arrayOfObjectExtractor(products)
     });
-  } catch (e) {
+  } catch (error) {
     return res.status(502).send({
       message: 'An error occurred'
     });
@@ -108,7 +108,7 @@ export const getDepartmentProduct = async (req, res) => {
       count: productsCount,
       rows: arrayOfObjectExtractor(products)
     });
-  } catch (e) {
+  } catch (error) {
     return res.status(502).send({
       message: 'An error occurred'
     });
@@ -147,7 +147,37 @@ export const searchProducts = async (req, res) => {
       count: productsCount,
       rows: products
     });
-  } catch (e) {
+  } catch (error) {
+    return res.status(502).send({
+      message: 'An error occurred'
+    });
+  }
+};
+
+/**
+* @export
+* @function getProductDetails
+* @param {Object} req - request received
+* @param {Object} res - response object
+* @returns {Object} JSON object (JSend format)
+*/
+export const getProductDetails = async (req, res) => {
+  try {
+    const { params: { productId } } = req;
+
+    const [productDetails] = await sequelize.query(`CALL catalog_get_product_details(${productId})`);
+
+    if (productDetails) {
+      return res.status(200).send({
+        productDetails
+      });
+    }
+    return res.status(404).send({
+      code: 'PRO_01',
+      message: 'Product does not exist',
+      field: 'Product Id'
+    });
+  } catch (error) {
     return res.status(502).send({
       message: 'An error occurred'
     });

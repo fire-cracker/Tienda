@@ -26,7 +26,7 @@ const opts = {
   }
 };
 
-opts.logging = env === 'test';
+opts.logging = env === 'test' ? false : undefined;
 const sequelize = new Sequelize(config.url, opts);
 
 
