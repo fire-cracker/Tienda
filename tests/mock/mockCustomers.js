@@ -33,3 +33,18 @@ export const customerProfileKeys = [
   'mob_phone',
   'credit_card'
 ];
+
+export const loginCustomer = {
+  password: 'oyedejipeace',
+  email: 'oyedejipeace@performance.com'
+};
+
+export const loginCustomerWrongEmail = {
+  password: 'oyedejipeace',
+  email: 'oyedejipeace@artisan.com'
+};
+
+export const loginCustomerWrongPassword = {
+  password: 'oyedejipeac',
+  email: 'oyedejipeace@performance.com'
+};

@@ -6,12 +6,13 @@ import app from '../../index';
 import { sequelize } from '../../server/model/index';
 
 import {
-  registerCustomer, registerCustomer2, customerProfileKeys, incorrectCustomerRegistration
+  registerCustomer, registerCustomer2, loginCustomer, loginCustomerWrongEmail,
+  loginCustomerWrongPassword, customerProfileKeys, incorrectCustomerRegistration
 } from '../mock/mockCustomers';
 
 chai.use(chaiHttp);
 
-describe('Tests for scustomers', () => {
+describe('Tests for customers', () => {
   before(async () => {
     const sql = await fs.promises.readFile(path.join(__dirname, '../../server/model/tshirtshop.sql'), 'utf8');
     await sequelize.query(sql, { type: sequelize.QueryTypes.RAW });
@@ -20,7 +21,7 @@ describe('Tests for scustomers', () => {
       .send(registerCustomer2);
   });
 
-  describe('Tests for register Customers', () => {
+  describe('Tests for register Customer', () => {
     it('should register customer if request is correct', async () => {
       const res = await chai.request(app)
         .post('/customers')
@@ -56,6 +57,58 @@ describe('Tests for scustomers', () => {
           'status', 'code', 'message', 'field'
         ]);
       expect(res.body.error.message).to.equal('The email already exist.');
+    });
+  });
+
+  describe('Tests for login Customer', () => {
+    it('should login customer if request is correct', async () => {
+      const res = await chai.request(app)
+        .post('/customers/login')
+        .send(loginCustomer);
+      expect(res).to.have.status(200);
+      expect(res.body).to.be.an.instanceof(Object)
+        .that.includes.all.keys('customer', 'accessToken', 'expires_in')
+        .and.to.have.property('customer')
+        .and.to.have.deep.property('schema')
+        .that.includes.all.keys(customerProfileKeys);
+    });
+
+    it('should return error if request to login customer is incorrect', async () => {
+      const res = await chai.request(app)
+        .post('/customers/login')
+        .send(incorrectCustomerRegistration);
+      expect(res).to.have.status(400);
+      expect(res.body).to.be.an.instanceof(Object)
+        .and.to.have.property('error')
+        .that.includes.all.keys([
+          'status', 'code', 'message', 'field'
+        ]);
+    });
+
+    it('should return error if customer email does not exist', async () => {
+      const res = await chai.request(app)
+        .post('/customers/login')
+        .send(loginCustomerWrongEmail);
+      expect(res).to.have.status(400);
+      expect(res.body).to.be.an.instanceof(Object)
+        .and.to.have.property('error')
+        .that.includes.all.keys([
+          'status', 'code', 'message', 'field'
+        ]);
+      expect(res.body.error.message).to.equal('This email does not exist');
+    });
+
+    it('should return error if customer password is incorrect', async () => {
+      const res = await chai.request(app)
+        .post('/customers/login')
+        .send(loginCustomerWrongPassword);
+      expect(res).to.have.status(400);
+      expect(res.body).to.be.an.instanceof(Object)
+        .and.to.have.property('error')
+        .that.includes.all.keys([
+          'status', 'code', 'message', 'field'
+        ]);
+      expect(res.body.error.message).to.equal('Email or Password is invalid');
     });
   });
 });
