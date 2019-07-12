@@ -5,6 +5,9 @@ import chaiHttp from 'chai-http';
 import app from '../../index';
 import { sequelize } from '../../server/model/index';
 
+import { productKeys } from '../mock/mockProducts';
+import { errorFormat } from '../mock/mockError';
+
 chai.use(chaiHttp);
 
 describe('Tests for get Product', () => {
@@ -30,7 +33,9 @@ describe('Tests for get Product', () => {
       const res = await chai.request(app)
         .get('/products?description_length=30&limit=h&page=0');
       expect(res).to.have.status(400);
-      expect(res.body.error.length > 0).to.equal(true);
+      expect(res.body).to.be.an.instanceof(Object)
+        .and.to.have.property('error')
+        .that.includes.all.keys(errorFormat);
     });
   });
 
@@ -59,7 +64,9 @@ describe('Tests for get Product', () => {
       const res = await chai.request(app)
         .get('/products/inCategory/2?description_length=30&limit=h&page=0');
       expect(res).to.have.status(400);
-      expect(res.body.error.length > 0).to.equal(true);
+      expect(res.body).to.be.an.instanceof(Object)
+        .and.to.have.property('error')
+        .that.includes.all.keys(errorFormat);
     });
   });
 
@@ -88,7 +95,9 @@ describe('Tests for get Product', () => {
       const res = await chai.request(app)
         .get('/products/inDepartment/2?description_length=30&limit=h&page=0');
       expect(res).to.have.status(400);
-      expect(res.body.error.length > 0).to.equal(true);
+      expect(res.body).to.be.an.instanceof(Object)
+        .and.to.have.property('error')
+        .that.includes.all.keys(errorFormat);
     });
   });
 
@@ -117,7 +126,9 @@ describe('Tests for get Product', () => {
       const res = await chai.request(app)
         .get('/products/search?query_string=peace&description_length=30&limit=h&page=0');
       expect(res).to.have.status(400);
-      expect(res.body.error.length > 0).to.equal(true);
+      expect(res.body).to.be.an.instanceof(Object)
+        .and.to.have.property('error')
+        .that.includes.all.keys(errorFormat);
     });
   });
 
@@ -128,9 +139,7 @@ describe('Tests for get Product', () => {
 
       expect(res).to.have.status(200);
       expect(res.body).to.be.an.instanceof(Object)
-        .that.includes.all.keys([
-          'product_id', 'name', 'description', 'price', 'discounted_price', 'image', 'image_2'
-        ]);
+        .that.includes.all.keys(productKeys);
     });
 
     it('should return error message if product does not exist', async () => {
@@ -147,8 +156,11 @@ describe('Tests for get Product', () => {
       const res = await chai.request(app)
         .get('/products/h/details');
       expect(res).to.have.status(400);
-      expect(res.body.error).to.equal('"productId" must be a number');
-      expect(res.body.field).to.equal('productId');
+      expect(res.body).to.be.an.instanceof(Object)
+        .and.to.have.property('error')
+        .that.includes.all.keys(errorFormat);
+      expect(res.body.error.message).to.equal('"productId" must be a number');
+      expect(res.body.error.field).to.equal('productId');
     });
   });
 });

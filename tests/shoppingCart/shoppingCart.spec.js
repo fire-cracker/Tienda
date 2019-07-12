@@ -5,6 +5,8 @@ import chaiHttp from 'chai-http';
 import app from '../../index';
 import { sequelize } from '../../server/model/index';
 
+import { errorFormat } from '../mock/mockError';
+
 chai.use(chaiHttp);
 
 describe('Tests for shopping cart', () => {
@@ -34,9 +36,8 @@ describe('Tests for shopping cart', () => {
         .send({ cart_id: 'e', product_id: 1, attributes: 'bags' });
       expect(res).to.have.status(400);
       expect(res.body).to.be.an.instanceof(Object)
-        .that.includes.all.keys([
-          'status', 'code', 'error', 'field'
-        ]);
+        .and.to.have.property('error')
+        .that.includes.all.keys(errorFormat);
     });
   });
 });

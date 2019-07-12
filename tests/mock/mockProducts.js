@@ -19,3 +19,13 @@ export const mockGetAllProducts = {
     }
   ]
 };
+
+export const productKeys = [
+  'product_id',
+  'name',
+  'description',
+  'price',
+  'discounted_price',
+  'image',
+  'image_2'
+];

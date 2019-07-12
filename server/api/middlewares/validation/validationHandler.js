@@ -15,10 +15,12 @@ export const validationHandler = async (req, schema, res, next) => {
     next();
   } catch (error) {
     return res.status(400).send({
-      status: 400,
-      code: 'VAL_02',
-      error: error.details[0].message,
-      field: error.details[0].path[0]
+      error: {
+        status: 400,
+        code: 'VAL_02',
+        message: error.details[0].message,
+        field: error.details[0].path[0]
+      }
     });
   }
 };
