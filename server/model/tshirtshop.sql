@@ -370,7 +370,7 @@ INSERT INTO `tax` (`tax_id`, `tax_type`, `tax_percentage`) VALUES
        (2, 'No Tax',            0.00);
 
 -- Change DELIMITER to $$
--- DELIMITER $$
+--  DELIMITER $$
 
 -- Create catalog_get_departments_list stored procedure
 DROP PROCEDURE IF EXISTS catalog_get_departments_list;
@@ -1619,6 +1619,15 @@ BEGIN
          VALUES (inCustomerId, inName, inEmail, inPassword);
 
   SELECT * FROM customer WHERE customer_id = inCustomerId;
+END;
+
+-- Create customer_login stored procedure
+DROP PROCEDURE IF EXISTS customer_login;
+CREATE PROCEDURE customer_login(IN inEmail VARCHAR(100))
+BEGIN
+  SELECT *
+  FROM customer 
+  WHERE email = inEmail;
 END;
 
 -- Change back DELIMITER to ;
