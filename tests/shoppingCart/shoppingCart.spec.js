@@ -5,7 +5,7 @@ import chaiHttp from 'chai-http';
 import app from '../../index';
 import { sequelize } from '../../server/model/index';
 
-import { errorFormat } from '../mock/mockError';
+import { errorFormat } from '../mocks/mockError';
 
 chai.use(chaiHttp);
 

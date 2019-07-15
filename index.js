@@ -5,6 +5,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import chalk from 'chalk';
 import { createLogger, format, transports } from 'winston';
+
+import auth from './server/api/middlewares/authentication/authenticate';
 import productsRouter from './server/api/routes/productsRouter';
 import shoppingCartRouter from './server/api/routes/shoppingCartRouter';
 import customersRouter from './server/api/routes/customersRouter';
@@ -39,6 +41,7 @@ app.use(
 );
 
 app.use(express.static(`${__dirname}/public`));
+app.use(auth.initialize());
 app.use('/products', productsRouter);
 app.use('/shoppingcart', shoppingCartRouter);
 app.use('/customers', customersRouter);

@@ -2,13 +2,17 @@ import fs from 'fs';
 import path from 'path';
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
+import passport from 'passport';
+import sinon from 'sinon';
+
 import app from '../../index';
 import { sequelize } from '../../server/model/index';
+import { mockStrategy } from '../mocks/mockFacebookStrategy';
 
 import {
   registerCustomer, registerCustomer2, loginCustomer, loginCustomerWrongEmail,
   loginCustomerWrongPassword, customerProfileKeys, incorrectCustomerRegistration
-} from '../mock/mockCustomers';
+} from '../mocks/mockCustomers';
 
 chai.use(chaiHttp);
 
@@ -19,6 +23,8 @@ describe('Tests for customers', () => {
     await chai.request(app)
       .post('/customers')
       .send(registerCustomer2);
+    const fake = sinon.fake.returns(passport.use(mockStrategy));
+    sinon.replace(passport, 'use', fake);
   });
 
   describe('Tests for register Customer', () => {
@@ -109,6 +115,29 @@ describe('Tests for customers', () => {
           'status', 'code', 'message', 'field'
         ]);
       expect(res.body.error.message).to.equal('Email or Password is invalid');
+    });
+  });
+
+  describe('Tests for Customer social login', () => {
+    it('should add new customer through social login', async () => {
+      const res = await chai.request(app)
+        .get('/customers/facebook/redirect');
+      expect(res).to.have.status(200);
+      expect(res.body).to.be.an.instanceof(Object)
+        .that.includes.all.keys('customer', 'accessToken', 'expires_in')
+        .and.to.have.property('customer')
+        .and.to.have.deep.property('schema')
+        .that.includes.all.keys(customerProfileKeys);
+    });
+    it('should return details of customer if customer was added already through social login', async () => {
+      const res = await chai.request(app)
+        .get('/customers/facebook/redirect');
+      expect(res).to.have.status(200);
+      expect(res.body).to.be.an.instanceof(Object)
+        .that.includes.all.keys('customer', 'accessToken', 'expires_in')
+        .and.to.have.property('customer')
+        .and.to.have.deep.property('schema')
+        .that.includes.all.keys(customerProfileKeys);
     });
   });
 });
