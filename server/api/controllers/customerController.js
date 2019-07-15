@@ -1,5 +1,4 @@
 import { sequelize } from '../../model/index';
-
 import { signToken } from '../helpers/tokenization';
 import { hashPassword, passwordMatch } from '../helpers/password';
 
@@ -103,6 +102,58 @@ export const loginCustomer = async (req, res) => {
         message: 'Email or Password is invalid',
         field: 'Password'
       }
+    });
+  } catch (error) {
+    return res.status(502).send({
+      message: 'An error occurred'
+    });
+  }
+};
+
+/**
+* @export
+* @function socialLogin
+* @param {Object} req - request received
+* @param {Object} res - response object
+* @returns {Object} JSON object (JSend format)
+*/
+export const socialLogin = async (req, res) => {
+  try {
+    const {
+      displayName, email, password
+    } = req.user;
+
+    const customerExist = await sequelize.query(
+      'CALL customer_get_login_info (:param)', {
+        replacements: { param: email }
+      }
+    );
+
+    if (customerExist.length) {
+      const [customer] = await sequelize.query(
+        'CALL customer_login (:param)', {
+          replacements: { param: email }
+        }
+      );
+      delete customer.password;
+
+      return res.status(200).send({
+        customer: { schema: customer },
+        accessToken: `Bearer ${customerToken}`,
+        expires_in: '24h'
+      });
+    }
+    const [customer] = await sequelize.query(
+      'CALL customer_add (:param1, :param2, :param3)', {
+        replacements: { param1: displayName, param2: email, param3: password }
+      }
+    );
+    delete customer.password;
+
+    return res.status(200).send({
+      customer: { schema: customer },
+      accessToken: `Bearer ${customerToken}`,
+      expires_in: '24h'
     });
   } catch (error) {
     return res.status(502).send({
