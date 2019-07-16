@@ -49,14 +49,21 @@ const facebookStrategy = new FacebookStrategy(facebookCredentials, passportCallb
 passport.use(facebookStrategy);
 passport.use(new JWTStrategy(options, async (payload, done) => {
   try {
-    const customer = await sequelize.query(
-      'CALL customer_get_login_info (:param)', {
+    const [customer] = await sequelize.query(
+      'CALL customer_login (:param)', {
         replacements: { param: payload.email }
       }
     );
 
     if (!customer) {
-      return done('Unauthorized', false);
+      return done(null, {
+        error: {
+          status: 401,
+          code: 'AUT_02',
+          message: 'Access Unauthorized',
+          field: 'NoAuth'
+        }
+      });
     }
 
     return done(null, customer);
