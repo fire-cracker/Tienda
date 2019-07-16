@@ -7,13 +7,15 @@ import app from '../../index';
 import { sequelize } from '../../server/model/index';
 
 import {
-  updateCustomer, registerCustomer2,
-  customerProfileKeys, updateWrongCustomer
+  updateCustomer, registerCustomer, registerCustomer2,
+  customerProfileKeys, updateWrongCustomer, updateAddress,
+  updateWrongAddress
 } from '../mocks/mockCustomers';
 
 chai.use(chaiHttp);
 
 let customerToken;
+let customerToken2;
 
 describe('Tests for update Customer account', () => {
   before(async () => {
@@ -23,6 +25,11 @@ describe('Tests for update Customer account', () => {
       .post('/customers')
       .send(registerCustomer2);
     customerToken = accessToken;
+
+    const { body: { accessToken: accessToken2 } } = await chai.request(app)
+      .post('/customers')
+      .send(registerCustomer);
+    customerToken2 = accessToken2;
   });
 
   describe('Tests for update customer details', () => {
@@ -54,6 +61,44 @@ describe('Tests for update Customer account', () => {
         .put('/customers')
         .set('Authorization', `${customerToken}`)
         .send(registerCustomer2);
+      expect(res).to.have.status(401);
+      expect(res.body).to.be.an.instanceof(Object)
+        .and.to.have.property('error')
+        .that.includes.all.keys([
+          'status', 'code', 'message', 'field'
+        ]);
+    });
+  });
+
+  describe('Tests for update customer address', () => {
+    it('should return error if request to update customer address is incorrect', async () => {
+      const res = await chai.request(app)
+        .put('/customers/address')
+        .set('Authorization', `${customerToken2}`)
+        .send(updateWrongAddress);
+      expect(res).to.have.status(400);
+      expect(res.body).to.be.an.instanceof(Object)
+        .and.to.have.property('error')
+        .that.includes.all.keys([
+          'status', 'code', 'message', 'field'
+        ]);
+    });
+
+    it('should successfully update customer address if request is correct', async () => {
+      const res = await chai.request(app)
+        .put('/customers/address')
+        .set('Authorization', `${customerToken2}`)
+        .send(updateAddress);
+      expect(res).to.have.status(200);
+      expect(res.body).to.be.an.instanceof(Object)
+        .that.includes.all.keys(customerProfileKeys);
+    });
+
+    it('should return error if customer does not exist', async () => {
+      const res = await chai.request(app)
+        .put('/customers/address')
+        .set('Authorization', `${customerToken}`)
+        .send(registerCustomer);
       expect(res).to.have.status(401);
       expect(res.body).to.be.an.instanceof(Object)
         .and.to.have.property('error')

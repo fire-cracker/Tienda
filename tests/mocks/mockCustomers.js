@@ -65,3 +65,22 @@ export const updateWrongCustomer = {
   eve_phone: '+452436143246123',
   mob_phone: '+351323213511235',
 };
+
+export const updateAddress = {
+  address_1: 'Andela Tower',
+  address_2: 'gfghohihho',
+  city: 'Laogos',
+  region: 'Ikorodu Road',
+  postal_code: '123',
+  country: 'Nigeria',
+  shipping_region_id: 23,
+};
+
+export const updateWrongAddress = {
+  address_1: 'Andela Tower',
+  address_2: 'gfghohihho',
+  city: 'Laogos',
+  postal_code: '123',
+  country: 'Nigeria',
+  shipping_region_id: 23,
+};
