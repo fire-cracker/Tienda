@@ -176,7 +176,7 @@ export const socialLogin = async (req, res) => {
 
 /**
 * @export
-* @function registerCustomer
+* @function updateCustomerAccount
 * @param {Object} req - request received
 * @param {Object} res - response object
 * @returns {Object} JSON object (JSend format)
@@ -211,6 +211,57 @@ export const updateCustomerAccount = async (req, res) => {
           param5: dayPhone === undefined ? oldDayPhone : dayPhone,
           param6: evePhone === undefined ? oldEvePhone : evePhone,
           param7: mobPhone === undefined ? oldMobPhone : mobPhone
+        }
+      }
+    );
+
+    delete customer.password;
+
+    return res.status(200).send(customer);
+  } catch (error) {
+    return res.status(502).send({
+      message: 'An error occurred'
+    });
+  }
+};
+
+/**
+* @export
+* @function updateCustomerAddress
+* @param {Object} req - request received
+* @param {Object} res - response object
+* @returns {Object} JSON object (JSend format)
+*/
+export const updateCustomerAddress = async (req, res) => {
+  try {
+    const {
+      body: {
+        address_1: address1,
+        address_2: address2,
+        city,
+        region,
+        postal_code: postalCode,
+        country,
+        shipping_region_id: shippingRegionId
+      },
+      user: {
+        customer_id: customerId,
+        address_2: oldAddress2,
+      }
+    } = req;
+
+
+    const [customer] = await sequelize.query(
+      'CALL customer_update_address (:param1, :param2, :param3, :param4, :param5, :param6, :param7, :param8)', {
+        replacements: {
+          param1: customerId,
+          param2: address1,
+          param3: address2 === undefined ? oldAddress2 : address2,
+          param4: city,
+          param5: region,
+          param6: postalCode,
+          param7: country,
+          param8: shippingRegionId
         }
       }
     );

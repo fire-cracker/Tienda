@@ -1,7 +1,7 @@
 import { validationHandler } from './validationHandler';
 import {
   registerCustomerSchema, loginCustomerSchema,
-  updateCustomerAccountSchema
+  updateCustomerAccountSchema, updateCustomerAddressSchema
 } from './schemas/customerSchema';
 
 
@@ -39,4 +39,16 @@ export const loginCustomerValidator = (req, res, next) => {
 */
 export const updateCustomerAccountValidator = (req, res, next) => {
   return validationHandler(req.body, updateCustomerAccountSchema, res, next);
+};
+
+/**
+* @export
+* @function updateCustomerAddressValidator
+* @param {Object} req - request received
+* @param {Object} res - response object
+* @param {Object} next - next object
+* @returns {Object} next object
+*/
+export const updateCustomerAddressValidator = (req, res, next) => {
+  return validationHandler(req.body, updateCustomerAddressSchema, res, next);
 };
