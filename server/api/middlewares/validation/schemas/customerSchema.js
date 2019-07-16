@@ -28,6 +28,9 @@ const country = Joi.string().trim().max(50)
 const shippingRegionId = Joi.number().integer().min(8)
   .max(100)
   .required();
+const creditCard = Joi.string().alphanum().trim().min(8)
+  .max(100)
+  .required();
 
 
 export const registerCustomerSchema = {
@@ -58,4 +61,8 @@ export const updateCustomerAddressSchema = {
   postal_code: postalCode,
   country,
   shipping_region_id: shippingRegionId
+};
+
+export const updateCustomerCreditCardSchema = {
+  credit_card: creditCard
 };
