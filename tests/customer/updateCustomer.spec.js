@@ -107,4 +107,42 @@ describe('Tests for update Customer account', () => {
         ]);
     });
   });
+
+  describe('Tests for update customer credit card detail', () => {
+    it('should return error if request to update customer creditcard detail is incorrect', async () => {
+      const res = await chai.request(app)
+        .put('/customers/creditcard')
+        .set('Authorization', `${customerToken2}`)
+        .send({ credit_card: '43677079070./' });
+      expect(res).to.have.status(400);
+      expect(res.body).to.be.an.instanceof(Object)
+        .and.to.have.property('error')
+        .that.includes.all.keys([
+          'status', 'code', 'message', 'field'
+        ]);
+    });
+
+    it('should successfully update customer creditcard detail if request is correct', async () => {
+      const res = await chai.request(app)
+        .put('/customers/creditcard')
+        .set('Authorization', `${customerToken2}`)
+        .send({ credit_card: '43677079070' });
+      expect(res).to.have.status(200);
+      expect(res.body).to.be.an.instanceof(Object)
+        .that.includes.all.keys(customerProfileKeys);
+    });
+
+    it('should return error if customer does not exist', async () => {
+      const res = await chai.request(app)
+        .put('/customers/creditcard')
+        .set('Authorization', `${customerToken}`)
+        .send({ credit_card: '43677079070' });
+      expect(res).to.have.status(401);
+      expect(res.body).to.be.an.instanceof(Object)
+        .and.to.have.property('error')
+        .that.includes.all.keys([
+          'status', 'code', 'message', 'field'
+        ]);
+    });
+  });
 });

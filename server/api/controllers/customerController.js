@@ -1,6 +1,7 @@
 import { sequelize } from '../../model/index';
 import { signToken } from '../helpers/tokenization';
 import { hashPassword, passwordMatch } from '../helpers/password';
+import { maskString } from '../../utils/index';
 
 
 /**
@@ -95,6 +96,8 @@ export const loginCustomer = async (req, res) => {
 
     if (passwordMatch(password, customer[0].password)) {
       delete customer[0].password;
+      customer[0].credit_card = customer[0].credit_card ? maskString(customer[0].credit_card, 4) : customer[0].credit_card;
+
       return res.status(200).send({
         customer: { schema: customer[0] },
         accessToken: `Bearer ${customerToken}`,
@@ -161,6 +164,7 @@ export const socialLogin = async (req, res) => {
       }
     );
     delete customer.password;
+    customer.credit_card = customer.credit_card ? maskString(customer.credit_card, 4) : customer.credit_card;
 
     return res.status(200).send({
       customer: { schema: customer },
@@ -216,6 +220,7 @@ export const updateCustomerAccount = async (req, res) => {
     );
 
     delete customer.password;
+    customer.credit_card = customer.credit_card ? maskString(customer.credit_card, 4) : customer.credit_card;
 
     return res.status(200).send(customer);
   } catch (error) {
@@ -267,6 +272,45 @@ export const updateCustomerAddress = async (req, res) => {
     );
 
     delete customer.password;
+    customer.credit_card = customer.credit_card ? maskString(customer.credit_card, 4) : customer.credit_card;
+
+    return res.status(200).send(customer);
+  } catch (error) {
+    return res.status(502).send({
+      message: 'An error occurred'
+    });
+  }
+};
+
+/**
+* @export
+* @function updateCustomerAddress
+* @param {Object} req - request received
+* @param {Object} res - response object
+* @returns {Object} JSON object (JSend format)
+*/
+export const updateCustomerCreditCard = async (req, res) => {
+  try {
+    const {
+      body: {
+        credit_card: creditCard,
+      },
+      user: {
+        customer_id: customerId,
+      }
+    } = req;
+
+    const [customer] = await sequelize.query(
+      'CALL customer_update_credit_card (:param1, :param2)', {
+        replacements: {
+          param1: customerId,
+          param2: creditCard
+        }
+      }
+    );
+
+    delete customer.password;
+    customer.credit_card = maskString(customer.credit_card, 4);
 
     return res.status(200).send(customer);
   } catch (error) {

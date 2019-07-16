@@ -1323,6 +1323,7 @@ BEGIN
   UPDATE customer
   SET    credit_card = inCreditCard
   WHERE  customer_id = inCustomerId;
+  SELECT * FROM customer WHERE customer_id = inCustomerId;
 END;
 
 -- Create customer_get_shipping_regions stored procedure
