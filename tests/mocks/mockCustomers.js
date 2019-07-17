@@ -84,3 +84,5 @@ export const updateWrongAddress = {
   country: 'Nigeria',
   shipping_region_id: 23,
 };
+
+export const wrongAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiY3VzdG9tZXIiLCJlbWFpbCI6Im95ZWRlamlwZWFjZUBnb3BlLmNvbSIsImlhdCI6MTU2MzM4NzkyMywiZXhwIjoxNTYzNDc0MzIzfQ.xqyIt5a5lsnl5P98uXhecJPUoObw2gAjXQO75p431AI';

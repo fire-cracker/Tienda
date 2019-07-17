@@ -10,6 +10,7 @@ import auth from './server/api/middlewares/authentication/authenticate';
 import productsRouter from './server/api/routes/productsRouter';
 import shoppingCartRouter from './server/api/routes/shoppingCartRouter';
 import customersRouter from './server/api/routes/customersRouter';
+import ordersRouter from './server/api/routes/ordersRouter';
 
 const logger = createLogger({
   level: 'debug',
@@ -45,6 +46,7 @@ app.use(auth.initialize());
 app.use('/products', productsRouter);
 app.use('/shoppingcart', shoppingCartRouter);
 app.use('/customers', customersRouter);
+app.use('/orders', ordersRouter);
 
 app.get('/', (req, res) => res.status(200).send({
   status: 'connection successful',
