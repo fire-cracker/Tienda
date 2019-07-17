@@ -1631,5 +1631,14 @@ BEGIN
   WHERE email = inEmail;
 END;
 
+-- Create shopping_cart_count_cart stored procedure
+DROP PROCEDURE IF EXISTS shopping_cart_count_cart;
+CREATE PROCEDURE shopping_cart_count_cart(IN  inCartId CHAR(32))
+BEGIN
+  SELECT     COUNT(*) AS cart_count
+  FROM       shopping_cart
+  WHERE      cart_id = inCartId;
+END;
+
 -- Change back DELIMITER to ;
 -- DELIMITER ;
