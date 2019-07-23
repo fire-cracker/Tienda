@@ -11,6 +11,7 @@ import productsRouter from './server/api/routes/productsRouter';
 import shoppingCartRouter from './server/api/routes/shoppingCartRouter';
 import customersRouter from './server/api/routes/customersRouter';
 import ordersRouter from './server/api/routes/ordersRouter';
+import chargeRouter from './server/api/routes/chargeRouter';
 
 const logger = createLogger({
   level: 'debug',
@@ -47,6 +48,7 @@ app.use('/products', productsRouter);
 app.use('/shoppingcart', shoppingCartRouter);
 app.use('/customers', customersRouter);
 app.use('/orders', ordersRouter);
+app.use('/stripe', chargeRouter);
 
 app.get('/', (req, res) => res.status(200).send({
   status: 'connection successful',
