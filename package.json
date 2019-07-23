@@ -34,6 +34,7 @@
     "passport-jwt": "^4.0.0",
     "sequelize": "^5.9.4",
     "sinon": "^7.3.2",
+    "stripe": "^7.4.0",
     "winston": "^3.2.0"
   },
   "devDependencies": {
