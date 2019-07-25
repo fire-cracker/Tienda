@@ -1,5 +1,4 @@
 import express from 'express';
-import bodyParser from 'body-parser';
 import session from 'express-session';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -30,8 +29,8 @@ app.use(cors());
 // Normal express config defaults
 app.use(require('morgan')('dev'));
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 app.use(
   session({

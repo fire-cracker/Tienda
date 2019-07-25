@@ -5,6 +5,8 @@ import { addToShoppingCartValidator } from '../middlewares/validation/shoppingCa
 
 const shoppingCartRouter = express.Router();
 
-shoppingCartRouter.post('/add', addToShoppingCartValidator, addToShoppingCart);
+shoppingCartRouter.post('/add',
+  addToShoppingCartValidator,
+  addToShoppingCart);
 
 export default shoppingCartRouter;

@@ -1,5 +1,10 @@
+import env from 'dotenv';
 import { sequelize } from '../../model/index';
 import stripeCharge from '../helpers/stripe';
+import { orderConfirmationMail } from '../helpers/mailer/mailer';
+
+env.config();
+const { NODE_ENV } = process.env;
 
 /**
 * @export
@@ -14,7 +19,7 @@ export const createCharge = async (req, res) => {
       body: {
         stripe_token: stripeToken, order_id: orderId, description, amount, currency
       },
-      user: { email }
+      user: { name, email }
     } = req;
 
     const charges = await stripeCharge(amount, currency || 'usd', stripeToken, email);
@@ -40,6 +45,18 @@ export const createCharge = async (req, res) => {
         }
       }
     );
+
+    const [orderDetails] = await sequelize.query(
+      'CALL orders_get_order_details (:param1)', {
+        replacements: {
+          param1: orderId,
+        }
+      }
+    );
+
+    if (NODE_ENV === 'development' || NODE_ENV === 'production') {
+      await orderConfirmationMail(name, email, orderDetails);
+    }
 
     return res.status(200).send(
       charges

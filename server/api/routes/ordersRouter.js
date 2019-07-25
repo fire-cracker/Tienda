@@ -7,6 +7,10 @@ import { authInterceptor } from '../middlewares/validation/validationHandler';
 
 const ordersRouter = express.Router();
 
-ordersRouter.post('/', passport.authenticate('jwt', { session: false }), authInterceptor, createOrdersValidator, createOrder);
+ordersRouter.post('/',
+  passport.authenticate('jwt', { session: false }),
+  authInterceptor,
+  createOrdersValidator,
+  createOrder);
 
 export default ordersRouter;
