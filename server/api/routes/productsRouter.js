@@ -8,10 +8,26 @@ import { getProductsValidator, searchProductsValidator } from '../middlewares/va
 
 const productsRouter = express.Router();
 
-productsRouter.get('/', getProductsValidator, getAllProducts);
-productsRouter.get('/inCategory/:categoryId', paramsValidator, getProductsValidator, getCatgoryProduct);
-productsRouter.get('/inDepartment/:departmentId', paramsValidator, getProductsValidator, getDepartmentProduct);
-productsRouter.get('/search', searchProductsValidator, searchProducts);
-productsRouter.get('/:productId/details', paramsValidator, getProductDetails);
+productsRouter.get('/',
+  getProductsValidator,
+  getAllProducts);
+
+productsRouter.get('/inCategory/:categoryId',
+  paramsValidator,
+  getProductsValidator,
+  getCatgoryProduct);
+
+productsRouter.get('/inDepartment/:departmentId',
+  paramsValidator,
+  getProductsValidator,
+  getDepartmentProduct);
+
+productsRouter.get('/search',
+  searchProductsValidator,
+  searchProducts);
+
+productsRouter.get('/:productId/details',
+  paramsValidator,
+  getProductDetails);
 
 export default productsRouter;
