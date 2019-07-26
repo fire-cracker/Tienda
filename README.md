@@ -1,6 +1,6 @@
 # NodeJs Project
 
-[![Build Status](https://travis-ci.com/oyedejipeace/Node.svg?token=C7qrnLuS7xqsUSoZ57Au&branch=develop)](https://travis-ci.com/oyedejipeace/Node)
+[![Build Status](https://travis-ci.com/oyedejipeace/Tienda.svg?token=C7qrnLuS7xqsUSoZ57Au&branch=develop)](https://travis-ci.com/oyedejipeace/Tienda)
 
 
 ## Table of Contents
@@ -8,9 +8,12 @@
 * [Project Overview](#Project-Overview)
 * [Features](#Features)
 * [Built with](#built-with)
+* [APP Link](#APP-link)
+* [API Documentation](#API-Documentation)
 * [API End Points](#API-End-Points)
 * [Known Issues](#Known-issues)
 * [Installation](#Installation)
+* [Test](#Test)
 * [Contributing](#contributing)
 * [License](#License)
 
@@ -36,47 +39,122 @@
 - `Node.js`
 - `Express framework`
 
-##### Middle Wares
-- `body-parser`
-- `morgan`
+
+## APP Link
+[Link](https://fire-cracker-tienda.herokuapp.com/) to app on heroku.
+
+
+## API Documentation
+POSTMAN API documentation  [here](https://documenter.getpostman.com/view/5148818/SVYjV3mH/)
 
 ## API End Points
-- `POST /customers`                          -   User Registration
-- `POST customers/login`                     -   Login User
-- `PUT /customers`                           -   Update User account
-- `GET /customers/facebook`                  -   Social login
-- `GET /products/`                           -   Fetches all available products
-- `GET /products/inCategory/:categoryId`     -   Fetches products based on Category
-- `GET /products/inDepartment/:department`   -   Fetches products based on Department
-- `GET /products/search`                     -   Search for products
-- `GET /products/:productId/details`        -   Get details of a product
-- `POST /shoppingcart/add`               -   Adds product to Shopping Cart
+<table>
+	<tr>
+		<th>HTTPS</th>
+		<th>ENDPOINT</th>
+		<th>DESCRIPTION</th>
+	</tr>
+	<tr>
+		<td>POST</td>
+		<td>/customers</td> 
+		<td>User Registration</td>
+	</tr>
+	<tr>
+		<td>POST</td>
+		<td>customers/login</td> 
+		<td>Login Cutomer</td>
+	</tr>
+	<tr>
+		<td>POST</td>
+		<td>/customers/facebook</td> 
+		<td>Social login</td>
+	</tr>
+	<tr>
+		<td>PUT</td>
+		<td>/customers</td> 
+		<td>Update Cutomer account</td>
+	</tr>
+	<tr>
+		<td>PUT</td>
+		<td>/customers/address</td> 
+		<td>Update Cutomer Address</td>
+	</tr>
+	<tr>
+		<td>PUT</td>
+		<td>/customers/creditcard</td> 
+		<td>Update Customer credit card detail</td>
+	</tr>
+	<tr>
+		<td>GET</td>
+		<td>/products/</td> 
+		<td>Fetch all products</td>
+	</tr>
+	<tr>
+		<td>GET</td>
+		<td>/products/inCategory/:categoryId</td> 
+		<td>Fetches products based on Category</td>
+	</tr>
+	<tr>
+		<td>GET</td>
+		<td>/products/inDepartment/:department</td> 
+		<td>Fetches products based on Department</td>
+	</tr>
+	<tr>
+		<td>GET</td>
+		<td>/products/search</td> 
+		<td>Search for products</td>
+	</tr>
+	<tr>
+		<td>GET</td>
+		<td>/products/:productId/details</td> 
+		<td>Get details of a product</td>
+	</tr>
+	<tr>
+		<td>POST</td>
+		<td>/shoppingcart/add</td> 
+		<td>Adds product to Shopping Cart</td>
+	</tr>
+	<tr>
+		<td>POST</td>
+		<td>/orders</td> 
+		<td>Create an order</td>
+	</tr>
+	<tr>
+		<td>POST</td>
+		<td>/stripe/charge</td> 
+		<td>Create charge with Stripe</td>
+	</tr>
+</table>  
 
  
  ## Known issues
 Everything works as expected; However:
-- the building of the project is not yet complete, i.e. more features are being added.
+- This project is just a backend app, i.e. no frontend implementation.
 
 
 ## Installation
-- $ git clone `https://github.com/oyedejipeace/Node.git`
-- $ cd Node
+- $ git clone `https://github.com/oyedejipeace/tienda.git`
+- $ cd tienda
 - $ npm i , to install dependencies
-- $ npm start, to start the server
+- Create .env file using the .env.sample file as a guide
+- $ npm start:dev, to start the server
 Once the server starts-up, you can query the api at `http://localhost:5000/` using the end points stated above.
+
+## Test
+- $ npm test
 
 ## Contributing
 >  Feel free to 🍴 fork this repository
 
->  👯 Clone this repository to your local machine using `https://github.com/oyedejipeace/Node.git`
+>  👯 Clone this repository to your local machine using `https://github.com/oyedejipeace/tienda.git`
 
 > Make Contributions
 
-> 🔃 Create a new pull request using `https://github.com/oyedejipeace/Node/compare`
+> 🔃 Create a new pull request using `https://github.com/oyedejipeace/tienda/compare`
 
 ## License
 ![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)
 
-- **[MIT license](https://oyedejipeace.github.io/Node/LICENSE.md)**
-- Copyright 2018 © <a href="https://github.com/oyedejipeace/Node" target="_blank">Node Project</a>
+- **[MIT license](https://oyedejipeace.github.io/tienda/LICENSE.md)**
+- Copyright 2018 © <a href="https://github.com/oyedejipeace/tienda" target="_blank">Tienda</a>
 

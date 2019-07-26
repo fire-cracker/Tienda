@@ -54,6 +54,11 @@ app.get('/', (req, res) => res.status(200).send({
   message: 'Welcome to my Node Project!'
 }));
 
+app.get('*', (req, res) => res.status(200).send({
+  status: 'fail',
+  message: 'Route not found',
+}));
+
 app.listen(port, () => {
   logger.debug(`Server running on port ${chalk.blue(port)}`);
 });

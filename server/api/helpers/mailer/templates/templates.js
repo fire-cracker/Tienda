@@ -4,7 +4,7 @@ const verifyTemplate = (cutomerName, orderDetails) => `
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>Coinbase</title>
+  <title>Tienda</title>
 </head>
 
 <body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0" style="margin: 0pt auto; padding: 0px; font-family:Arial, sans-serif; background-color:#555555">
