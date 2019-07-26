@@ -20,6 +20,7 @@ describe('Tests for customers', () => {
   before(async () => {
     const sql = await fs.promises.readFile(path.join(__dirname, '../../server/model/tshirtshop.sql'), 'utf8');
     await sequelize.query(sql, { type: sequelize.QueryTypes.RAW });
+
     await chai.request(app)
       .post('/customers')
       .send(registerCustomer2);

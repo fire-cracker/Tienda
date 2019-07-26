@@ -1,4 +1,6 @@
-import { sequelize } from '../../model/index';
+import {
+  addOrder, cartsCount
+} from '../services/orderServices';
 
 /**
 * @export
@@ -18,13 +20,7 @@ export const createOrder = async (req, res) => {
       }
     } = req;
 
-    const [{ cart_count: cartCount }] = await sequelize.query(
-      'CALL shopping_cart_count_cart (:param1)', {
-        replacements: {
-          param1: cartId
-        }
-      }
-    );
+    const cartCount = await cartsCount(cartId);
 
     if (!cartCount) {
       return res.status(400).send({
@@ -37,16 +33,7 @@ export const createOrder = async (req, res) => {
       });
     }
 
-    const [order] = await sequelize.query(
-      'CALL shopping_cart_create_order (:param1, :param2, :param3, :param4)', {
-        replacements: {
-          param1: cartId,
-          param2: customerId,
-          param3: shippingId,
-          param4: taxId
-        }
-      }
-    );
+    const [order] = await addOrder(cartId, customerId, shippingId, taxId);
 
     return res.status(200).send(
       order

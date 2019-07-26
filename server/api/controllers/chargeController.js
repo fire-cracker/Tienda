@@ -1,7 +1,10 @@
 import env from 'dotenv';
-import { sequelize } from '../../model/index';
+
 import stripeCharge from '../helpers/stripe';
 import { orderConfirmationMail } from '../helpers/mailer/mailer';
+import {
+  updateOrder, getOrderDetails
+} from '../services/chargeServices';
 
 env.config();
 const { NODE_ENV } = process.env;
@@ -22,44 +25,27 @@ export const createCharge = async (req, res) => {
       user: { name, email }
     } = req;
 
-    const charges = await stripeCharge(amount, currency || 'usd', stripeToken, email);
+    const stripeCharges = await stripeCharge(amount, currency || 'usd', stripeToken, email);
 
-    if (charges.statusCode === 400) {
+    if (stripeCharges.statusCode === 400) {
       return res.status(400).send({
         error: {
-          code: charges.code,
-          message: charges.message,
-          field: charges.param
+          code: stripeCharges.code,
+          message: stripeCharges.message,
+          field: stripeCharges.param
         }
       });
     }
+    await updateOrder(orderId, description, stripeCharges.id);
 
-    await sequelize.query(
-      'CALL orders_update_order (:param1, :param2, :param3, :param4, :param5)', {
-        replacements: {
-          param1: orderId,
-          param2: 10,
-          param3: description,
-          param4: charges.id,
-          param5: null
-        }
-      }
-    );
-
-    const [orderDetails] = await sequelize.query(
-      'CALL orders_get_order_details (:param1)', {
-        replacements: {
-          param1: orderId,
-        }
-      }
-    );
+    const [orderDetails] = await getOrderDetails(orderId);
 
     if (NODE_ENV === 'development' || NODE_ENV === 'production') {
       await orderConfirmationMail(name, email, orderDetails);
     }
 
     return res.status(200).send(
-      charges
+      stripeCharges
     );
   } catch (error) {
     return res.status(500).send({

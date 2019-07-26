@@ -16,7 +16,7 @@ sgMail.setApiKey(process.env.SENDGRID_KEY);
   */
 export const orderConfirmationMail = (username, email, orderDetails) => {
   const msg = {
-    to: 'oyedejipeace@yahoo.com',
+    to: email,
     from: process.env.TIENDA_EMAIL_ADDRESS,
     subject: 'Tienda Order Confirmation Mail',
     html: verifyTemplate(username, orderDetails),
