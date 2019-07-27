@@ -7,7 +7,7 @@ export const registerCustomer = {
 export const registerCustomer2 = {
   name: 'Oyedeji Peace',
   password: 'oyedejipeace',
-  email: 'oyedejipeace@great.com'
+  email: 'oyedejipeace@tienda.com'
 };
 
 

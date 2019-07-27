@@ -12,7 +12,7 @@ module.exports = {
     dialect: 'mysql'
   },
   production: {
-    url: process.env.DATABASE_URL_PROD,
+    url: process.env.CLEARDB_DATABASE_URL,
     dialect: 'mysql'
   }
 };

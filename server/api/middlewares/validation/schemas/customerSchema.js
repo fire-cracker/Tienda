@@ -19,7 +19,7 @@ const address2 = Joi.string().trim().min(8).max(100)
   .allow('');
 const city = Joi.string().trim().max(100)
   .required();
-const region = Joi.string().trim().min(8).max(100)
+const region = Joi.string().trim().max(100)
   .required();
 const postalCode = Joi.number().integer().max(10000)
   .required();

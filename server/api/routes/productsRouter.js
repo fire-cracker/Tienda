@@ -1,6 +1,6 @@
 import express from 'express';
 import {
-  getAllProducts, getCatgoryProduct, getDepartmentProduct, searchProducts,
+  getAllProducts, getCategoryProducts, getDepartmentProducts, searchProducts,
   getProductDetails
 } from '../controllers/productController';
 import { paramsValidator } from '../middlewares/validation/paramsValidation';
@@ -15,12 +15,12 @@ productsRouter.get('/',
 productsRouter.get('/inCategory/:categoryId',
   paramsValidator,
   getProductsValidator,
-  getCatgoryProduct);
+  getCategoryProducts);
 
 productsRouter.get('/inDepartment/:departmentId',
   paramsValidator,
   getProductsValidator,
-  getDepartmentProduct);
+  getDepartmentProducts);
 
 productsRouter.get('/search',
   searchProductsValidator,

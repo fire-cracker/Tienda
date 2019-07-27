@@ -1,4 +1,6 @@
-import { sequelize } from '../../model/index';
+import {
+  addproductToShoppingCart, getShoppingCartProducts
+} from '../services/shoppingCartService';
 
 /**
 * @export
@@ -15,15 +17,9 @@ export const addToShoppingCart = async (req, res) => {
       }
     } = req;
 
-    await sequelize.query(
-      'CALL shopping_cart_add_product (:param1, :param2, :param3)', {
-        replacements: { param1: cartId, param2: productId, param3: attributes }
-      }
-    );
+    await addproductToShoppingCart(cartId, productId, attributes);
 
-    const products = await sequelize.query(
-      `CALL shopping_cart_get_products (${cartId})`
-    );
+    const products = await getShoppingCartProducts(cartId);
 
     return res.status(200).send(
       products

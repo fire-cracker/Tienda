@@ -3,12 +3,17 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": "12.6.0"
+  },
   "scripts": {
     "test": "NODE_ENV=test PORT=3001 nyc mocha --require @babel/register tests/**/*.js --exit",
     "lint": "eslint",
-    "start": "NODE_ENV=development nodemon --exec babel-node index.js --preset-env",
+    "start:dev": "NODE_ENV=development nodemon --exec babel-node index.js --preset-env",
+    "start": "npm run createdb && babel-node index.js --preset-env",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "createdb": "mysql -u root -e 'CREATE DATABASE IF NOT EXISTS nodeproject_test;'"
+    "createdb": "babel-node ./server/model/createDatabase",
+    "heroku-postbuild": "npm run start"
   },
   "author": "Oyedeji Peace",
   "license": "MIT",

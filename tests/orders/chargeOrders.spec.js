@@ -69,10 +69,4 @@ describe('Tests for creating charge for an order', () => {
         .that.includes.all.keys(chargeOrderTokenError);
     });
   });
-  // describe('test for order confirmation mail', async () => {
-  //   it('should send order confirmation mail', async () => {
-  //     const stub = sinon.stub(orderConfirmationMail, 'send').resolves();
-  //     console.log(stub)
-  //   });
-  // });
 });
