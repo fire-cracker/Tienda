@@ -20,7 +20,7 @@ const logger = createLogger({
 
 dotenv.config();
 
-const port = 5000 || process.env.LOCAL_PORT;
+const port = process.env.PORT || process.env.LOCAL_PORT;
 // Create global app object
 const app = express();
 
